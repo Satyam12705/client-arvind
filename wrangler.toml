@@ -14,7 +14,7 @@ pages_build_output_dir = "dist"
 [[d1_databases]]
 binding = "DB"
 database_name = "anand-techno-fab-content"
-database_id = "8fe0b5ce-44b9-43cd-a55b-caf676c05ee2"
+database_id = "8d4584cab4928b048834a4dbdc6e3048"
 
 # --- Admin panel media (images/videos/logo uploads) ---
 # Stored on Cloudinary's free tier instead of R2 — no bucket to provision.
