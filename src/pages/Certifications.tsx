@@ -3,11 +3,19 @@ import PageHero from "../components/PageHero";
 import SectionLabel from "../components/SectionLabel";
 import Lightbox from "../components/Lightbox";
 import Reveal from "../components/Reveal";
+import Seo from "../components/Seo";
 import { useContent } from "../lib/content";
 
 export default function Certifications() {
   const { certifications, statutoryRegistrations, awards, completionCertificate, pageHeroes, certificationsContent } =
     useContent();
+  const certJsonLd = certifications.map((c) => ({
+    "@context": "https://schema.org",
+    "@type": "EducationalOccupationalCredential",
+    name: `${c.standard} — ${c.name}`,
+    credentialCategory: c.standard,
+    recognizedBy: { "@type": "Organization", name: "Anand Techno-Fab LLP" },
+  }));
   const [certIndex, setCertIndex] = useState<number | null>(null);
   const [regIndex, setRegIndex] = useState<number | null>(null);
   const [awardIndex, setAwardIndex] = useState<number | null>(null);
@@ -30,6 +38,11 @@ export default function Certifications() {
 
   return (
     <>
+      <Seo
+        path="/certifications"
+        breadcrumbs={[{ name: "Home", path: "/" }, { name: "Certifications", path: "/certifications" }]}
+        jsonLd={certJsonLd}
+      />
       <PageHero
         index="06"
         eyebrow={pageHeroes.certifications.eyebrow}

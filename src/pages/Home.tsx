@@ -7,6 +7,7 @@ import VideoHero from "../components/VideoHero";
 import BlueprintFrame from "../components/BlueprintFrame";
 import TechTag from "../components/TechTag";
 import ProjectExplorer from "../components/ProjectExplorer";
+import Seo from "../components/Seo";
 import { useContent } from "../lib/content";
 import { whatsappLink } from "../lib/whatsapp";
 import { useParallax } from "../lib/useParallax";
@@ -62,6 +63,7 @@ export default function Home() {
 
   return (
     <>
+      <Seo path="/" />
       {/* 1. HERO — cinematic, dark. min-height (not a capped max-height) so the
           giant display type can never be clipped by overflow-hidden at any
           viewport width — the section grows to fit its content instead. */}

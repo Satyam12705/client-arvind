@@ -3,6 +3,7 @@ import PageHero from "../components/PageHero";
 import SectionLabel from "../components/SectionLabel";
 import StatBlock from "../components/StatBlock";
 import Reveal from "../components/Reveal";
+import Seo from "../components/Seo";
 import { useContent } from "../lib/content";
 
 export default function Capabilities() {
@@ -12,6 +13,7 @@ export default function Capabilities() {
 
   return (
     <>
+      <Seo path="/capabilities" breadcrumbs={[{ name: "Home", path: "/" }, { name: "Capabilities", path: "/capabilities" }]} />
       <PageHero index="04" eyebrow={pageHeroes.capabilities.eyebrow} title={pageHeroes.capabilities.title} intro={pageHeroes.capabilities.intro} />
 
       {/* Team */}
@@ -73,7 +75,7 @@ export default function Capabilities() {
           </Reveal>
           <div className="flex gap-4 md:gap-10 mt-3">
             {financials.map((f) => (
-              <div key={f.year} className="flex-1 text-center label-eyebrow text-steel max-w-16 md:max-w-none mx-auto">
+              <div key={f.year} className="flex-1 text-center label-eyebrow text-steel whitespace-nowrap mx-auto">
                 {f.year.replace("FY ", "")}
               </div>
             ))}

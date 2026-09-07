@@ -1,9 +1,12 @@
 import { useMemo, useState } from "react";
+import { Link } from "react-router-dom";
 import PageHero from "../components/PageHero";
 import SectionLabel from "../components/SectionLabel";
 import TechTag from "../components/TechTag";
 import Reveal from "../components/Reveal";
 import ProjectExplorer from "../components/ProjectExplorer";
+import Seo from "../components/Seo";
+import { slugify } from "../data/seoRoutes";
 import { useContent } from "../lib/content";
 
 type Project = ReturnType<typeof useContent>["projects"][number];
@@ -31,8 +34,40 @@ export default function Projects() {
     return projects.filter((p) => p.categories.includes(filter as never));
   }, [filter, projects]);
 
+  const stateLinks = useMemo(() => {
+    const seen = new Map<string, string>();
+    for (const p of projects) {
+      const parts = p.location.split(",").map((s) => s.trim());
+      const name = parts[parts.length - 1];
+      const key = name.toLowerCase();
+      if (!name || key === "india" || seen.has(key)) continue;
+      seen.set(key, name);
+    }
+    return Array.from(seen.values()).map((name) => ({ name, slug: slugify(name) }));
+  }, [projects]);
+
+  const projectsJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    itemListElement: projects.map((p, i) => ({
+      "@type": "ListItem",
+      position: i + 1,
+      name: p.title,
+      item: {
+        "@type": "CreativeWork",
+        name: p.title,
+        locationCreated: p.location,
+      },
+    })),
+  };
+
   return (
     <>
+      <Seo
+        path="/projects"
+        breadcrumbs={[{ name: "Home", path: "/" }, { name: "Projects", path: "/projects" }]}
+        jsonLd={projectsJsonLd}
+      />
       <PageHero index="03" eyebrow={pageHeroes.projects.eyebrow} title={pageHeroes.projects.title} intro={pageHeroes.projects.intro} />
 
       {/* Concurrent commitments */}
@@ -143,6 +178,30 @@ export default function Projects() {
           </div>
         </div>
       </section>
+
+      {/* Cross-links to the location hub pages, generated from the same project records above */}
+      {stateLinks.length > 0 && (
+        <section className="container-edge py-12 md:py-16 border-t border-concrete">
+          <p className="label-eyebrow text-steel mb-4">Explore work by region</p>
+          <div className="flex flex-wrap gap-3">
+            <Link
+              to="/locations"
+              className="label-eyebrow px-4 py-2 border border-concrete hover:border-charcoal hover:text-charcoal text-steel transition-all duration-300"
+            >
+              All Locations
+            </Link>
+            {stateLinks.map((s) => (
+              <Link
+                key={s.slug}
+                to={`/locations/${s.slug}`}
+                className="label-eyebrow px-4 py-2 border border-concrete hover:border-charcoal hover:text-charcoal text-steel transition-all duration-300"
+              >
+                {s.name}
+              </Link>
+            ))}
+          </div>
+        </section>
+      )}
 
       {selected && (
         <ProjectDetail project={selected} onClose={() => setSelected(null)} />

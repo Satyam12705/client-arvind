@@ -1,6 +1,7 @@
 import PageHero from "../components/PageHero";
 import SectionLabel from "../components/SectionLabel";
 import Reveal from "../components/Reveal";
+import Seo from "../components/Seo";
 import { useContent } from "../lib/content";
 
 export default function About() {
@@ -9,6 +10,7 @@ export default function About() {
 
   return (
     <>
+      <Seo path="/about" breadcrumbs={[{ name: "Home", path: "/" }, { name: "About", path: "/about" }]} />
       <PageHero index="01" eyebrow={pageHeroes.about.eyebrow} title={pageHeroes.about.title} intro={pageHeroes.about.intro} />
 
       {/* Journey */}

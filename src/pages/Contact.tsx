@@ -3,6 +3,7 @@ import PageHero from "../components/PageHero";
 import SectionLabel from "../components/SectionLabel";
 import Reveal from "../components/Reveal";
 import MagneticButton from "../components/MagneticButton";
+import Seo from "../components/Seo";
 import { useContent } from "../lib/content";
 import { buildEnquiryMessage, mailLink, telLink, whatsappLink } from "../lib/whatsapp";
 
@@ -44,6 +45,7 @@ export default function Contact() {
 
   return (
     <>
+      <Seo path="/contact" breadcrumbs={[{ name: "Home", path: "/" }, { name: "Contact", path: "/contact" }]} />
       <PageHero index="08" eyebrow={pageHeroes.contact.eyebrow} title={pageHeroes.contact.title} intro={pageHeroes.contact.intro} />
 
       {/* Quick contact */}

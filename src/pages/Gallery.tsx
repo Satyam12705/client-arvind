@@ -2,6 +2,7 @@ import { useMemo, useState } from "react";
 import PageHero from "../components/PageHero";
 import Lightbox from "../components/Lightbox";
 import Reveal from "../components/Reveal";
+import Seo from "../components/Seo";
 import { useContent } from "../lib/content";
 
 type GalleryItem = ReturnType<typeof useContent>["galleryItems"][number];
@@ -33,6 +34,7 @@ export default function Gallery() {
 
   return (
     <>
+      <Seo path="/gallery" breadcrumbs={[{ name: "Home", path: "/" }, { name: "Gallery", path: "/gallery" }]} />
       <PageHero index="07" eyebrow={pageHeroes.gallery.eyebrow} title={pageHeroes.gallery.title} intro={pageHeroes.gallery.intro} />
 
       <section className="container-edge py-16 md:py-24">

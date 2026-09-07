@@ -11,6 +11,9 @@ import QualitySafety from "./pages/QualitySafety";
 import Certifications from "./pages/Certifications";
 import Gallery from "./pages/Gallery";
 import Contact from "./pages/Contact";
+import Locations from "./pages/Locations";
+import LocationDetail from "./pages/LocationDetail";
+import ServiceDetail from "./pages/ServiceDetail";
 import NotFound from "./pages/NotFound";
 import AdminLogin from "./pages/admin/Login";
 import AdminDashboard from "./pages/admin/Dashboard";
@@ -23,7 +26,10 @@ function PublicSite() {
         <Route path="/" element={<Home />} />
         <Route path="/about" element={<About />} />
         <Route path="/services" element={<Services />} />
+        <Route path="/services/:slug" element={<ServiceDetail />} />
         <Route path="/projects" element={<Projects />} />
+        <Route path="/locations" element={<Locations />} />
+        <Route path="/locations/:state" element={<LocationDetail />} />
         <Route path="/capabilities" element={<Capabilities />} />
         <Route path="/quality-safety" element={<QualitySafety />} />
         <Route path="/certifications" element={<Certifications />} />

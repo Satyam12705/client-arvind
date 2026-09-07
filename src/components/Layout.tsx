@@ -5,10 +5,12 @@ import ContactDock from "./ContactDock";
 import LogoIntro from "./LogoIntro";
 import ScrollProgress from "./ScrollProgress";
 import FluidCursor from "./FluidCursor";
+import OrganizationJsonLd from "./OrganizationJsonLd";
 
 export default function Layout({ children }: { children: ReactNode }) {
   return (
     <div className="min-h-screen flex flex-col bg-paper text-charcoal pb-16 md:pb-0">
+      <OrganizationJsonLd />
       <FluidCursor />
       <LogoIntro />
       <ScrollProgress />

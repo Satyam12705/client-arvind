@@ -1,6 +1,7 @@
 import PageHero from "../components/PageHero";
 import SectionLabel from "../components/SectionLabel";
 import Reveal from "../components/Reveal";
+import Seo from "../components/Seo";
 import { useContent } from "../lib/content";
 
 export default function QualitySafety() {
@@ -8,6 +9,10 @@ export default function QualitySafety() {
 
   return (
     <>
+      <Seo
+        path="/quality-safety"
+        breadcrumbs={[{ name: "Home", path: "/" }, { name: "Quality & Safety", path: "/quality-safety" }]}
+      />
       <PageHero
         index="05"
         eyebrow={pageHeroes.qualitySafety.eyebrow}
