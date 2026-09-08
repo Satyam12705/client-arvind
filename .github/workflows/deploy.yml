@@ -25,7 +25,11 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          # wrangler@4.127.1 (pinned in package.json) requires Node 22+ and
+          # refuses to run on Node 20, which is what failed the deploy step
+          # (a clear, correct error from wrangler itself — not a config
+          # problem with the step) once the earlier issues were fixed.
+          node-version: 22
           cache: npm
 
       - run: npm ci
