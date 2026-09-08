@@ -31,15 +31,16 @@ jobs:
       - run: npm ci
       - run: npm run build
 
+      # Runs the wrangler that `npm ci` above already installed (matching the
+      # exact pinned version + lockfile in package.json), instead of
+      # cloudflare/wrangler-action@v3 — which always does its own separate
+      # `npm install wrangler@<version>` in-place and, at every version tried
+      # (its 3.90.0 default and an explicit "4" pin), that install's peer
+      # dependency on @cloudflare/workers-types@^4.x conflicted with this
+      # repo's own already-installed @cloudflare/workers-types@^5.x and broke
+      # with ERESOLVE before wrangler ever got to run.
       - name: Deploy to Cloudflare Pages
-        uses: cloudflare/wrangler-action@v3
-        with:
-          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          # Without this, wrangler-action installs its own default wrangler
-          # (3.90.0), whose peer dependency on an older @cloudflare/workers-types
-          # conflicts with this repo's own devDependency (^5.x) and breaks
-          # `npm ci` inside the action with an ERESOLVE error. Pin it to the
-          # same major version already used in package.json.
-          wranglerVersion: "4"
-          command: pages deploy dist --project-name=client-arvind
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: npx wrangler pages deploy dist --project-name=client-arvind
