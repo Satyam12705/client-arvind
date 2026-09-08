@@ -79,13 +79,17 @@ export default function ProjectExplorer({
           )}
         </div>
 
-        <div className="mt-10 flex flex-wrap gap-2">
+        {/* Horizontally scrolling, 2 rows tall — a flex-wrap grid of these
+            grew taller (more rows) the more projects existed, at one point
+            pushing well past this panel's fixed-height frame. Fixed at 2
+            rows regardless of project count; scrolls sideways instead. */}
+        <div className="explorer-index-scroll mt-10 grid grid-flow-col grid-rows-2 auto-cols-[2.5rem] gap-2 overflow-x-auto pb-2 -mx-8 md:-mx-10 px-8 md:px-10">
           {projects.map((p, i) => (
             <button
               key={p.id}
               onClick={() => setActive(i)}
               aria-label={`Show project ${i + 1}: ${p.title}`}
-              className={`tech-tag w-10 h-10 flex items-center justify-center border transition-all duration-300 ${
+              className={`tech-tag w-10 h-10 flex items-center justify-center border transition-all duration-300 shrink-0 ${
                 i === active
                   ? "border-rust-light bg-rust-light/10 text-rust-light"
                   : "border-ivory/20 text-ivory/50 hover:border-ivory/50 hover:text-ivory"

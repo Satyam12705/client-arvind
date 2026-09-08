@@ -260,6 +260,24 @@ body {
   animation: logo-sweep 0.6s ease-in-out 0.45s both;
 }
 
+/* Thin, on-brand scrollbar for the Project Explorer's horizontally
+   scrolling index strip — the default scrollbar reads as an OS control
+   dropped onto an otherwise designed dark panel. */
+.explorer-index-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-steel) transparent;
+}
+.explorer-index-scroll::-webkit-scrollbar {
+  height: 6px;
+}
+.explorer-index-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+.explorer-index-scroll::-webkit-scrollbar-thumb {
+  background-color: var(--color-steel);
+  border-radius: 999px;
+}
+
 @keyframes wa-pulse {
   0%, 100% {
     opacity: 0;
