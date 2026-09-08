@@ -1,6 +1,7 @@
 name: Deploy to Cloudflare Pages
 
-# Runs on push to main, or manually from the Actions tab.
+# Runs on push to main or to this repo's actual default branch (it isn't
+# named "main" here), or manually from the Actions tab.
 # Requires two repository secrets to actually deploy:
 #   CLOUDFLARE_API_TOKEN   — a Cloudflare API token with "Cloudflare Pages: Edit"
 #   CLOUDFLARE_ACCOUNT_ID  — your Cloudflare account ID
@@ -8,7 +9,7 @@ name: Deploy to Cloudflare Pages
 # still passes) so this doesn't block anything on this repo by itself.
 on:
   push:
-    branches: [main]
+    branches: [main, claude/anand-techno-fab-website-tnqqab]
   workflow_dispatch: {}
 
 jobs:
