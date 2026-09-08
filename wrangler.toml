@@ -23,3 +23,15 @@ database_id = "44cefad6-714f-4ff3-8b9c-81d19081ff6a"
 #   wrangler pages secret put CLOUDINARY_API_SECRET
 # For local dev, put the same three in a .dev.vars file (gitignored).
 # See README.md "Admin Panel Setup" for the full one-time setup.
+
+# --- Contact form email delivery ---
+# Every /contact submission is saved to D1 (migrations/0005_enquiries.sql)
+# regardless of the below, then emailed to mail@anandtechnofab.com via
+# Resend (https://resend.com — free tier is more than enough for a contact
+# form). One-time setup:
+#   1. Sign up at resend.com and verify the anandtechnofab.com domain there
+#      (adds an SPF + DKIM DNS record so mail actually sends "from" it and
+#      doesn't land in spam).
+#   2. wrangler pages secret put RESEND_API_KEY
+# For local dev, put the same key in .dev.vars (gitignored). Until this
+# secret is set, enquiries still save to D1 — they just aren't emailed yet.

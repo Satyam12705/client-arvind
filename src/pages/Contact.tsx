@@ -5,7 +5,7 @@ import Reveal from "../components/Reveal";
 import MagneticButton from "../components/MagneticButton";
 import Seo from "../components/Seo";
 import { useContent } from "../lib/content";
-import { buildEnquiryMessage, mailLink, telLink, whatsappLink } from "../lib/whatsapp";
+import { mailLink, telLink, whatsappLink } from "../lib/whatsapp";
 
 interface FormState {
   name: string;
@@ -27,21 +27,32 @@ const initialState: FormState = {
   requirement: "",
 };
 
+type SubmitStatus = "idle" | "submitting" | "success" | "error";
+
 export default function Contact() {
   const { company, specializations, pageHeroes, contactContent } = useContent();
   const [form, setForm] = useState<FormState>(initialState);
-  const [submitted, setSubmitted] = useState(false);
+  const [status, setStatus] = useState<SubmitStatus>("idle");
 
   const set = (key: keyof FormState) => (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
   ) => setForm((f) => ({ ...f, [key]: e.target.value }));
 
-  const onSubmit = (e: FormEvent) => {
+  const onSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    setSubmitted(true);
+    setStatus("submitting");
+    try {
+      const res = await fetch("/api/enquiry", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(form),
+      });
+      if (!res.ok) throw new Error(`Request failed with ${res.status}`);
+      setStatus("success");
+    } catch {
+      setStatus("error");
+    }
   };
-
-  const message = buildEnquiryMessage(form);
 
   return (
     <>
@@ -93,7 +104,7 @@ export default function Contact() {
               {contactContent.enquiry.heading}
             </h2>
 
-            {!submitted ? (
+            {status !== "success" ? (
               <form onSubmit={onSubmit} className="mt-10 space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <Field label="Full Name" required>
@@ -134,49 +145,45 @@ export default function Contact() {
                   />
                 </Field>
 
+                {status === "error" && (
+                  <p className="text-sm text-rust leading-relaxed" role="alert">
+                    Something went wrong sending your enquiry. Please try again, or reach us
+                    directly by phone, email or WhatsApp above.
+                  </p>
+                )}
+
                 <MagneticButton className="w-full md:w-auto">
                   <button
                     type="submit"
-                    className="group w-full md:w-auto inline-flex items-center justify-center gap-2.5 bg-charcoal text-paper px-8 py-4 label-eyebrow hover:bg-rust hover:shadow-[0_6px_24px_rgba(184,83,31,0.35)] transition-all duration-300"
+                    disabled={status === "submitting"}
+                    className="group w-full md:w-auto inline-flex items-center justify-center gap-2.5 bg-charcoal text-paper px-8 py-4 label-eyebrow hover:bg-rust hover:shadow-[0_6px_24px_rgba(184,83,31,0.35)] transition-all duration-300 disabled:opacity-60 disabled:pointer-events-none"
                   >
-                    Send Project Enquiry
+                    {status === "submitting" ? "Sending…" : "Send Project Enquiry"}
                     <ArrowIcon className="transition-transform duration-300 group-hover:translate-x-1" />
                   </button>
                 </MagneticButton>
               </form>
             ) : (
               <div className="mt-10 border border-rust/40 bg-paper p-8 animate-fade-up">
-                <p className="label-eyebrow text-rust">Enquiry Ready</p>
+                <p className="label-eyebrow text-rust">Enquiry Sent</p>
                 <p className="mt-3 text-lg font-medium">
-                  Thank you. Your enquiry details are ready to be shared with Anand Techno-Fab.
+                  Thank you. Your enquiry has been sent to our team.
                 </p>
                 <p className="mt-2 text-sm text-steel leading-relaxed">
-                  This form does not connect to a live inbox in this preview. Use the button
-                  below to send your details directly to us over WhatsApp, or reach us by
-                  phone or email above.
+                  We'll get back to you shortly. In the meantime, feel free to reach us directly
+                  by phone or WhatsApp above.
                 </p>
-                <div className="mt-6 flex flex-wrap gap-4">
-                  <a
-                    href={whatsappLink(message, company.whatsappNumber)}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="inline-flex items-center gap-2 bg-rust text-white px-6 py-3 label-eyebrow hover:bg-rust-dark transition-colors"
-                  >
-                    Send via WhatsApp
-                  </a>
+                <div className="mt-6">
                   <button
                     onClick={() => {
-                      setSubmitted(false);
+                      setStatus("idle");
                       setForm(initialState);
                     }}
                     className="border border-charcoal/30 px-6 py-3 label-eyebrow hover:border-charcoal transition-colors"
                   >
-                    Start Over
+                    Send Another Enquiry
                   </button>
                 </div>
-                <pre className="mt-6 whitespace-pre-wrap text-xs text-steel bg-ivory border border-concrete p-4 font-mono">
-{message}
-                </pre>
               </div>
             )}
           </Reveal>

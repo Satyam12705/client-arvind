@@ -59,6 +59,8 @@ export default function VideoHero({
       <img
         src={poster}
         alt={alt}
+        width={1283}
+        height={762}
         className={className}
         loading="eager"
         decoding="async"
@@ -80,7 +82,13 @@ export default function VideoHero({
       disablePictureInPicture
       disableRemotePlayback
       tabIndex={-1}
-      preload="auto"
+      // "metadata" instead of "auto": the poster paints immediately and the
+      // component's own play() calls (on loadeddata/canplay) still start
+      // playback as soon as the browser has enough buffered — "auto" was
+      // telling the browser to eagerly pull the entire video file at parse
+      // time, competing for bandwidth with the JS bundle, fonts and the
+      // poster image itself on the very connection that determines LCP.
+      preload="metadata"
       aria-label={alt}
     >
       <source src={src} type="video/mp4" />

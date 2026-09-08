@@ -144,7 +144,7 @@ export default function Home() {
             </BlueprintFrame>
             <p className="mt-4 label-eyebrow text-rust-light">{heroStat.label}</p>
           </Reveal>
-          <div className="lg:col-span-5 grid grid-cols-3 gap-6 lg:gap-8 lg:border-l lg:border-ivory/15 lg:pl-8">
+          <div className="lg:col-span-5 grid grid-cols-1 sm:grid-cols-3 gap-6 lg:gap-8 lg:border-l lg:border-ivory/15 lg:pl-8">
             {supportingStats.map((s, i) => (
               <Reveal key={s.label} delay={i * 90} className="min-w-0 border-t border-ivory/15 pt-4">
                 <AnimatedNumber value={s.value} className="block text-3xl md:text-4xl font-semibold tracking-tight text-white" />
@@ -200,6 +200,8 @@ export default function Home() {
                   <img
                     src={specializations[0].image}
                     alt={specializations[0].title}
+                    width={1600}
+                    height={1000}
                     className="w-full h-full object-cover"
                     loading="lazy"
                     decoding="async"
@@ -294,6 +296,8 @@ export default function Home() {
             <img
               src={sections.photography.items[0].image}
               alt={sections.photography.items[0].caption}
+              width={1920}
+              height={1080}
               className="w-full h-full object-cover"
               loading="lazy"
               decoding="async"
@@ -322,7 +326,7 @@ export default function Home() {
             {sections.photography.items.slice(1).map((item, i) => (
               <Reveal key={item.image} delay={i * 150} className={i === 1 ? "translate-x-10" : ""}>
                 <BlueprintFrame dark className="block w-56 aspect-[4/3] overflow-hidden shadow-2xl">
-                  <img src={item.image} alt={item.caption} className="w-full h-full object-cover" loading="lazy" decoding="async" />
+                  <img src={item.image} alt={item.caption} width={800} height={600} className="w-full h-full object-cover" loading="lazy" decoding="async" />
                 </BlueprintFrame>
               </Reveal>
             ))}
@@ -349,6 +353,8 @@ export default function Home() {
                     <img
                       src={c.image}
                       alt={c.standard}
+                      width={800}
+                      height={600}
                       className="w-full h-full object-cover object-top transition-all duration-500 grayscale-[40%] group-hover:grayscale-0 group-hover:scale-105"
                       loading="lazy"
                       decoding="async"
@@ -391,6 +397,8 @@ export default function Home() {
           <img
             src={sections.finalCta.backgroundImage}
             alt="Structural fabrication and welding work"
+            width={1920}
+            height={1080}
             className="w-full h-full object-cover opacity-45"
             loading="lazy"
             decoding="async"

@@ -68,7 +68,7 @@ export default function Certifications() {
               className="block text-left group border border-concrete hover:border-rust hover:shadow-lg transition-all duration-300"
             >
               <div className="aspect-[4/3] overflow-hidden border-b border-concrete bg-ivory">
-                <img src={c.image} alt={c.standard} className="w-full h-full object-cover object-top transition-transform duration-500 group-hover:scale-105"
+                <img src={c.image} alt={c.standard} width={800} height={600} className="w-full h-full object-cover object-top transition-transform duration-500 group-hover:scale-105"
                   loading="lazy"
                   decoding="async"
                 />

@@ -42,6 +42,8 @@ export default function About() {
                 <img
                   src={ceo.photo}
                   alt={`${ceo.name.replace(/^Mr\.\s*/, "")}, ${ceo.role}, Anand Techno-Fab LLP`}
+                  width={800}
+                  height={1080}
                   className="w-full h-full object-cover"
                   loading="lazy"
                   decoding="async"

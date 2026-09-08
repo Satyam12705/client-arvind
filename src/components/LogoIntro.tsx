@@ -174,6 +174,8 @@ export default function LogoIntro() {
             <img
               src={content.siteSettings.logo}
               alt=""
+              width={455}
+              height={238}
               className={`relative z-10 h-14 md:h-16 w-auto transition-all ease-out ${
                 logoVisible ? "opacity-100 scale-100 blur-0" : "opacity-0 scale-90 blur-md"
               }`}

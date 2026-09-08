@@ -277,6 +277,8 @@ function ProjectDetail({ project, onClose }: { project: Project; onClose: () => 
                   key={img}
                   src={img}
                   alt={project.title}
+                  width={img === images[0] ? 1600 : 800}
+                  height={img === images[0] ? 900 : 800}
                   className={`w-full object-cover ${img === images[0] ? "col-span-2 aspect-[16/9]" : "aspect-square"}`}
                   loading="lazy"
                   decoding="async"

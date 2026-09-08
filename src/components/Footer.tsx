@@ -66,6 +66,8 @@ export default function Footer() {
           <img
             src={siteSettings.logo}
             alt="Anand Techno-Fab LLP"
+            width={455}
+            height={238}
             className="h-10 w-auto mb-4"
             loading="lazy"
             decoding="async"
@@ -77,7 +79,7 @@ export default function Footer() {
 
         <div className="md:col-span-3">
           <p className="label-eyebrow text-ivory/40 mb-4">{footerContent.navigateHeading}</p>
-          <ul className="space-y-2.5 text-sm">
+          <ul className="grid grid-cols-2 grid-flow-col grid-rows-4 gap-x-6 gap-y-2.5 text-sm">
             {nav.filter((n) => n.label !== "Home").map((item) => (
               <li key={item.to}>
                 <Link to={item.to} className="group inline-flex items-center hover:text-rust-light transition-colors">

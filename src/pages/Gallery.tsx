@@ -114,6 +114,8 @@ function GalleryFrame({
       <img
         src={item.image}
         alt={item.caption}
+        width={800}
+        height={600}
         className="w-full h-full object-cover grayscale-[35%] contrast-[1.02] transition-all duration-700 ease-out group-hover:scale-[1.04] group-hover:grayscale-0"
         loading="lazy"
         decoding="async"

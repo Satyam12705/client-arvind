@@ -5,6 +5,7 @@ export interface Env {
   CLOUDINARY_CLOUD_NAME: string;
   CLOUDINARY_API_KEY: string;
   CLOUDINARY_API_SECRET: string;
+  RESEND_API_KEY: string;
 }
 
 export function json(data: unknown, init: ResponseInit = {}): Response {

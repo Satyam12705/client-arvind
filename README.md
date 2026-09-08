@@ -143,6 +143,28 @@ default content (`src/data/defaultContent.json`, generated from
 `company.ts` + the page copy) and simply doesn't serve `/admin` correctly
 until the steps above are done.
 
+## Contact Form Email Setup (one-time)
+
+Every submission on `/contact` is saved to D1 (the `enquiries` table,
+`migrations/0005_enquiries.sql`) no matter what — that part needs nothing
+beyond the D1 setup above. To also have it emailed to
+`mail@anandtechnofab.com`, set up [Resend](https://resend.com) (free tier
+covers a contact form many times over):
+
+```bash
+# 1. Sign up at resend.com, add anandtechnofab.com as a sending domain, and
+#    add the SPF + DKIM DNS records it gives you at your domain registrar —
+#    without this the emails will either fail to send or land in spam.
+
+# 2. Copy an API key from the Resend dashboard, then:
+npx wrangler pages secret put RESEND_API_KEY --project-name=client-arvind
+```
+
+Until `RESEND_API_KEY` is set, enquiries still save to D1 — they just won't
+be emailed yet, and the enquiry endpoint logs why (visible via
+`wrangler pages deployment tail`). No code changes needed once the secret
+is added; it takes effect on the next request.
+
 ## Project structure
 
 ```

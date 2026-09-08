@@ -5,6 +5,10 @@ import { useContent } from "../lib/content";
 
 export default function Navbar() {
   const { nav, company, siteSettings } = useContent();
+  // "Contact" is deliberately left out here — the "Contact Us" button next
+  // to these links (desktop) / below them (mobile menu) already covers it,
+  // so listing it again read as a redundant duplicate link.
+  const navLinks = nav.filter((n) => n.label !== "Home" && n.label !== "Contact");
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const location = useLocation();
@@ -64,12 +68,14 @@ export default function Navbar() {
               <img
                 src={siteSettings.logo}
                 alt="Anand Techno-Fab LLP"
-                className="h-9 xl:h-11 w-auto transition-all duration-300"
+                width={455}
+                height={238}
+                className="h-11 xl:h-14 w-auto transition-all duration-300"
               />
             </Link>
 
             <nav className="hidden xl:flex items-center gap-4 2xl:gap-8 shrink-0">
-              {nav.filter((n) => n.label !== "Home").map((item) => (
+              {navLinks.map((item) => (
                 <NavLink
                   key={item.to}
                   to={item.to}
@@ -125,7 +131,7 @@ export default function Navbar() {
         {open && (
           <div className="xl:hidden border-t border-concrete bg-paper animate-fade-up">
             <nav className="container-edge py-4 flex flex-col">
-              {nav.map((item) => (
+              {nav.filter((n) => n.label !== "Contact").map((item) => (
                 <NavLink
                   key={item.to}
                   to={item.to}

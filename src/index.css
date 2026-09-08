@@ -81,12 +81,18 @@ body {
 .text-cinema-display {
   font-size: clamp(1.9rem, 0.85rem + 4.6vw, 7rem);
   overflow-wrap: break-word;
+  text-wrap: balance;
 }
 
 /* Stacked editorial section headlines ("TWO DECADES / OF BUILDING / ..."). */
 .text-editorial-display {
   font-size: clamp(1.9rem, 0.85rem + 5vw, 6.25rem);
   overflow-wrap: break-word;
+  /* Evens out line lengths instead of the browser's default greedy wrap,
+     which otherwise leaves a short last word (e.g. "In") stranded alone
+     on its own line at in-between viewport widths. Falls back to normal
+     wrapping harmlessly on browsers that don't support text-wrap. */
+  text-wrap: balance;
 }
 
 /* The number itself is the hero — used for the giant stat moment. */

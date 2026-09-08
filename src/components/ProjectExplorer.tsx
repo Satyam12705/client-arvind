@@ -38,6 +38,8 @@ export default function ProjectExplorer({
             key={p.id}
             src={p.image}
             alt={p.title}
+            width={1600}
+            height={900}
             className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ease-out ${
               i === active ? "opacity-100" : "opacity-0"
             }`}

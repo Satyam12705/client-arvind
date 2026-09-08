@@ -8,8 +8,28 @@
     <title>Anand Techno-Fab LLP | Infrastructure Development &amp; Solutions</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+    <!-- Loaded non-render-blocking: the media="print" trick defers this
+         stylesheet's application until after first paint, then the onload
+         swap applies it — fonts still swap in quickly (font-display=swap
+         in the URL already covers FOIT), but the initial render no longer
+         waits on this request. <noscript> covers the no-JS fallback. -->
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap"
+      media="print"
+      onload="this.media='all'"
+    />
+    <noscript>
+      <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" />
+    </noscript>
     <link rel="preload" as="image" href="/images/logo.png" />
+    <!-- The hero background video's poster is the page's LCP element, but its
+         URL only exists inside JS-rendered markup (this is a client-rendered
+         SPA) — the browser's preload scanner can't discover it from the raw
+         HTML otherwise, so it wouldn't start fetching until React mounts.
+         Matches siteSettings.heroPoster's default; harmless if an admin ever
+         changes that value, just loses this specific hint until updated here. -->
+    <link rel="preload" as="image" href="/images/gallery/kalisindh-trench.jpg" fetchpriority="high" />
     <!-- Critical inline style: paints the intro's charcoal backdrop before the JS
          bundle executes, so a first-time visitor never sees a flash of the paper
          background before the arrival animation takes over. Layout's own

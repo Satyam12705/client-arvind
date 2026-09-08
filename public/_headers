@@ -1,0 +1,14 @@
+# Cloudflare Pages headers. Vite's own build output (JS/CSS under /assets/)
+# is content-hashed — the filename changes whenever the content does — so it's
+# safe to cache those forever. Everything else under public/ (images, video,
+# logo) keeps the same filename across edits, so it gets a shorter cache
+# instead of "immutable".
+
+/assets/*
+  Cache-Control: public, max-age=31536000, immutable
+
+/images/*
+  Cache-Control: public, max-age=86400
+
+/videos/*
+  Cache-Control: public, max-age=86400

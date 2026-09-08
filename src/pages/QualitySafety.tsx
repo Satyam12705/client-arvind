@@ -43,6 +43,8 @@ export default function QualitySafety() {
           <img
             src={qualitySafetyContent.hse.image}
             alt="Field safety training session"
+            width={800}
+            height={600}
             className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
             loading="lazy"
             decoding="async"
@@ -57,6 +59,8 @@ export default function QualitySafety() {
             <img
               src={qualitySafetyContent.quality.image}
               alt="Employee health checkup camp at project site"
+              width={800}
+              height={600}
               className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
               loading="lazy"
               decoding="async"
@@ -96,6 +100,8 @@ export default function QualitySafety() {
               <img
                 src={item.image}
                 alt={item.caption}
+                width={800}
+                height={600}
                 className="w-full aspect-[4/3] object-cover transition-transform duration-700 group-hover:scale-105"
                 loading="lazy"
                 decoding="async"
