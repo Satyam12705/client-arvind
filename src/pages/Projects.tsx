@@ -12,6 +12,14 @@ import { useContent } from "../lib/content";
 type Project = ReturnType<typeof useContent>["projects"][number];
 
 const projectImages: Record<string, string[]> = {
+  "adani-shakkar-pench": [
+    "/images/gallery/kalisindh-trench.jpg",
+    "/images/gallery/kalisindh-aerial.jpg",
+  ],
+  "scc-mahi-bajaj-sagar-earthwork": [
+    "/images/gallery/sauni-earthwork.jpg",
+    "/images/gallery/isp-kalisindh-earthwork.jpg",
+  ],
   "isp-kalisindh": [
     "/images/gallery/kalisindh-aerial.jpg",
     "/images/gallery/kalisindh-trench.jpg",

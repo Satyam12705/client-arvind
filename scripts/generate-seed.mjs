@@ -68,7 +68,7 @@ const home = {
   scrollLabel: "Scroll",
   stats: [
     { value: "20+", label: "Years of Field Experience" },
-    { value: "15", label: "Project References in Profile" },
+    { value: "20", label: "Project References in Profile" },
     { value: "145+", label: "Skilled Contractual Workforce" },
     { value: "3", label: "ISO Certifications Held" },
   ],
@@ -90,7 +90,7 @@ const home = {
       eyebrowIndex: "03",
       eyebrowLabel: "Project Experience",
       heading: "Selected\nproject experience.",
-      linkLabel: "View all 15 projects",
+      linkLabel: "View all 20 projects",
     },
     capability: {
       eyebrowIndex: "04",
@@ -144,7 +144,7 @@ const pageHeroes = {
   projects: {
     eyebrow: "Projects",
     title: "Project Experience",
-    intro: "Fifteen project references drawn from the company profile, executed for clients including L&T, Kalpataru, JMC and ESSAR.",
+    intro: "Twenty project references executed for clients including Adani-LCC JV, L&T, LCC Projects Limited, SCC Infrastructure, Kalpataru, JMC and ESSAR.",
   },
   capabilities: {
     eyebrow: "Capabilities",
@@ -248,6 +248,11 @@ const footerContent = {
 // category/site rather than inventing new imagery — the user will replace
 // these with dedicated per-project photography via the admin media library.
 const projectImages = {
+  "adani-shakkar-pench": "/images/gallery/kalisindh-trench.jpg",
+  "lt-ril-nagothane": "/images/gallery/pipeline-twin-line.jpg",
+  "lcc-sondwa-lip": "/images/gallery/kalisindh-irrigation-1.jpg",
+  "scc-mahi-bajaj-sagar-structures": "/images/gallery/isp-kalisindh-reinforcement.jpg",
+  "scc-mahi-bajaj-sagar-earthwork": "/images/gallery/sauni-earthwork.jpg",
   "northern-link": "/images/gallery/pipeline-trench.jpg",
   "parvati-2-3": "/images/gallery/kalisindh-irrigation-1.jpg",
   "isp-kalisindh": "/images/gallery/kalisindh-aerial.jpg",

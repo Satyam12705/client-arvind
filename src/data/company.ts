@@ -1,5 +1,9 @@
-// All content sourced directly from Anand Techno-Fab LLP's official Company Profile (2025).
-// Do not add figures, projects, clients or claims that are not present in that source document.
+// Core company data sourced from Anand Techno-Fab LLP's official Company Profile (2025),
+// plus additional real project engagements added in 2026 from primary source documents —
+// purchase orders, service orders and work orders issued by Larsen & Toubro Limited,
+// Adani-LCC JV / Adani Water Limited, LCC Projects Limited and SCC Infrastructure Pvt Ltd.
+// Do not add figures, projects, clients or claims that are not backed by an actual
+// company profile, contract, or PO/WO/SO document.
 
 export const company = {
   legalName: "ANAND TECHNO-FAB LLP",
@@ -179,6 +183,15 @@ export const equipmentHighlights = [
 
 export const concurrentCommitments = [
   {
+    diameter: "2900 MM",
+    title: "MS Pipeline & Civil Works — Shakkar Pench Micro Lift Irrigation Project",
+    location: "Chhindwara, Madhya Pradesh",
+    detail:
+      "Laying of 2900 mm diameter MS rising main pipeline over a length of 12.755 km, together with associated civil works — excavation, backfilling and concrete works — for the Hard Dam under the Shakkar Pench Micro Lift Irrigation Project, as sub-contractor to M/s Adani-LCC JV (Adani Water Limited).",
+    workOrderValue: "₹ 12.14 Cr",
+    workDone: "In Progress",
+  },
+  {
     diameter: "2600 MM",
     title: "MS Syphon Pipeline — IR014, Mahi Bajaj Sagar",
     location: "Banswara, Rajasthan",
@@ -212,6 +225,51 @@ export interface Project {
 }
 
 export const projects: Project[] = [
+  {
+    id: "adani-shakkar-pench",
+    year: "2025–26",
+    title: "MS Pipeline & Civil Works, Shakkar Pench Micro Lift Irrigation Project",
+    location: "Chhindwara, Madhya Pradesh",
+    client: "Adani-LCC JV",
+    workDoneCr: 12.14,
+    categories: ["Water Pipeline", "Irrigation"],
+  },
+  {
+    id: "lt-ril-nagothane",
+    year: "2025–26",
+    title: "UG Piping Field Welding, RIL Nagothane Vinyl Project",
+    location: "Nagothane, Maharashtra",
+    client: "L&T",
+    workDoneCr: 1.95,
+    categories: ["Structural"],
+  },
+  {
+    id: "lcc-sondwa-lip",
+    year: "2025–26",
+    title: "MS Pipe Laying, Sondwa Lift Irrigation Project (NVDA)",
+    location: "Alirajpur, Madhya Pradesh",
+    client: "LCC Projects",
+    workDoneCr: 1.55,
+    categories: ["Water Pipeline", "Irrigation"],
+  },
+  {
+    id: "scc-mahi-bajaj-sagar-structures",
+    year: "2025–26",
+    title: "RCC Structural Work, Mahi Bajaj Sagar Project (IR014)",
+    location: "Banswara, Rajasthan",
+    client: "SCC Infrastructure",
+    workDoneCr: 4.83,
+    categories: ["Structural"],
+  },
+  {
+    id: "scc-mahi-bajaj-sagar-earthwork",
+    year: "2025–26",
+    title: "Earthwork Excavation, Mahi Bajaj Sagar Project (IR014)",
+    location: "Banswara, Rajasthan",
+    client: "SCC Infrastructure",
+    workDoneCr: 5.55,
+    categories: ["Earthwork"],
+  },
   {
     id: "northern-link",
     year: "2024–25",

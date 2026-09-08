@@ -53,9 +53,9 @@ export const STATIC_SEO: Record<string, StaticSeoEntry> = {
     priority: 0.9,
   },
   "/projects": {
-    title: "Project Experience | Anand Techno-Fab LLP",
+    title: "Project Experience | L&T, Adani-LCC JV, SCC Infrastructure | Anand Techno-Fab LLP",
     description:
-      "Project references executed for L&T, Kalpataru, JMC and ESSAR across Gujarat, Rajasthan and Madhya Pradesh — MS water pipeline, irrigation, structural and earthwork contracts.",
+      "Project references executed for Adani-LCC JV, L&T, LCC Projects Limited, SCC Infrastructure, Kalpataru, JMC and ESSAR across Gujarat, Rajasthan, Madhya Pradesh and Maharashtra — MS water pipeline, irrigation, structural and earthwork contracts.",
     changefreq: "weekly",
     priority: 0.9,
   },
@@ -95,9 +95,9 @@ export const STATIC_SEO: Record<string, StaticSeoEntry> = {
     priority: 0.7,
   },
   "/locations": {
-    title: "Where We Work | Project Locations Across Gujarat, Rajasthan & MP",
+    title: "Where We Work | Project Locations Across Gujarat, Rajasthan, MP & Maharashtra",
     description:
-      "Anand Techno-Fab LLP's infrastructure project locations across Gujarat, Rajasthan and Madhya Pradesh, with real project references, clients and contract values for each region.",
+      "Anand Techno-Fab LLP's infrastructure project locations across Gujarat, Rajasthan, Madhya Pradesh and Maharashtra, with real project references for clients including Adani-LCC JV, L&T and SCC Infrastructure.",
     changefreq: "monthly",
     priority: 0.8,
   },

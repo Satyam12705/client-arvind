@@ -342,6 +342,14 @@
   ],
   "concurrentCommitments": [
     {
+      "diameter": "2900 MM",
+      "title": "MS Pipeline & Civil Works — Shakkar Pench Micro Lift Irrigation Project",
+      "location": "Chhindwara, Madhya Pradesh",
+      "detail": "Laying of 2900 mm diameter MS rising main pipeline over a length of 12.755 km, together with associated civil works — excavation, backfilling and concrete works — for the Hard Dam under the Shakkar Pench Micro Lift Irrigation Project, as sub-contractor to M/s Adani-LCC JV (Adani Water Limited).",
+      "workOrderValue": "₹ 12.14 Cr",
+      "workDone": "In Progress"
+    },
+    {
       "diameter": "2600 MM",
       "title": "MS Syphon Pipeline — IR014, Mahi Bajaj Sagar",
       "location": "Banswara, Rajasthan",
@@ -359,6 +367,68 @@
     }
   ],
   "projects": [
+    {
+      "id": "adani-shakkar-pench",
+      "year": "2025–26",
+      "title": "MS Pipeline & Civil Works, Shakkar Pench Micro Lift Irrigation Project",
+      "location": "Chhindwara, Madhya Pradesh",
+      "client": "Adani-LCC JV",
+      "workDoneCr": 12.14,
+      "categories": [
+        "Water Pipeline",
+        "Irrigation"
+      ],
+      "image": "/images/gallery/kalisindh-trench.jpg"
+    },
+    {
+      "id": "lt-ril-nagothane",
+      "year": "2025–26",
+      "title": "UG Piping Field Welding, RIL Nagothane Vinyl Project",
+      "location": "Nagothane, Maharashtra",
+      "client": "L&T",
+      "workDoneCr": 1.95,
+      "categories": [
+        "Structural"
+      ],
+      "image": "/images/gallery/pipeline-twin-line.jpg"
+    },
+    {
+      "id": "lcc-sondwa-lip",
+      "year": "2025–26",
+      "title": "MS Pipe Laying, Sondwa Lift Irrigation Project (NVDA)",
+      "location": "Alirajpur, Madhya Pradesh",
+      "client": "LCC Projects",
+      "workDoneCr": 1.55,
+      "categories": [
+        "Water Pipeline",
+        "Irrigation"
+      ],
+      "image": "/images/gallery/kalisindh-irrigation-1.jpg"
+    },
+    {
+      "id": "scc-mahi-bajaj-sagar-structures",
+      "year": "2025–26",
+      "title": "RCC Structural Work, Mahi Bajaj Sagar Project (IR014)",
+      "location": "Banswara, Rajasthan",
+      "client": "SCC Infrastructure",
+      "workDoneCr": 4.83,
+      "categories": [
+        "Structural"
+      ],
+      "image": "/images/gallery/isp-kalisindh-reinforcement.jpg"
+    },
+    {
+      "id": "scc-mahi-bajaj-sagar-earthwork",
+      "year": "2025–26",
+      "title": "Earthwork Excavation, Mahi Bajaj Sagar Project (IR014)",
+      "location": "Banswara, Rajasthan",
+      "client": "SCC Infrastructure",
+      "workDoneCr": 5.55,
+      "categories": [
+        "Earthwork"
+      ],
+      "image": "/images/gallery/sauni-earthwork.jpg"
+    },
     {
       "id": "northern-link",
       "year": "2024–25",
@@ -832,7 +902,7 @@
         "label": "Years of Field Experience"
       },
       {
-        "value": "15",
+        "value": "20",
         "label": "Project References in Profile"
       },
       {
@@ -862,7 +932,7 @@
         "eyebrowIndex": "03",
         "eyebrowLabel": "Project Experience",
         "heading": "Selected\nproject experience.",
-        "linkLabel": "View all 15 projects"
+        "linkLabel": "View all 20 projects"
       },
       "capability": {
         "eyebrowIndex": "04",
@@ -924,7 +994,7 @@
     "projects": {
       "eyebrow": "Projects",
       "title": "Project Experience",
-      "intro": "Fifteen project references drawn from the company profile, executed for clients including L&T, Kalpataru, JMC and ESSAR."
+      "intro": "Twenty project references executed for clients including Adani-LCC JV, L&T, LCC Projects Limited, SCC Infrastructure, Kalpataru, JMC and ESSAR."
     },
     "capabilities": {
       "eyebrow": "Capabilities",

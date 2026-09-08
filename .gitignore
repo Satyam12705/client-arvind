@@ -16,6 +16,10 @@ dist-ssr
 .wrangler
 .dev.vars
 
+# Source purchase orders / service orders / work orders used to compile project
+# data — contain client contract terms, contacts and pricing; not for the repo.
+myprojects/
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
