@@ -14,6 +14,7 @@ interface FormState {
   email: string;
   location: string;
   service: string;
+  serviceOther: string;
   requirement: string;
 }
 
@@ -24,6 +25,7 @@ const initialState: FormState = {
   email: "",
   location: "",
   service: "",
+  serviceOther: "",
   requirement: "",
 };
 
@@ -42,10 +44,14 @@ export default function Contact() {
     e.preventDefault();
     setStatus("submitting");
     try {
+      const payload = {
+        ...form,
+        service: form.service === "Other" && form.serviceOther.trim() ? form.serviceOther.trim() : form.service,
+      };
       const res = await fetch("/api/enquiry", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
+        body: JSON.stringify(payload),
       });
       if (!res.ok) throw new Error(`Request failed with ${res.status}`);
       setStatus("success");
@@ -130,8 +136,19 @@ export default function Contact() {
                           {s.title}
                         </option>
                       ))}
+                      <option value="Other">Other</option>
                     </select>
                   </Field>
+                  {form.service === "Other" && (
+                    <Field label="Please Specify">
+                      <input
+                        value={form.serviceOther}
+                        onChange={set("serviceOther")}
+                        className="input"
+                        placeholder="Tell us what service you need"
+                      />
+                    </Field>
+                  )}
                 </div>
 
                 <Field label="Project Requirement" required>
