@@ -5,8 +5,11 @@ name: Deploy to Cloudflare Pages
 # Requires two repository secrets to actually deploy:
 #   CLOUDFLARE_API_TOKEN   — a Cloudflare API token with "Cloudflare Pages: Edit"
 #   CLOUDFLARE_ACCOUNT_ID  — your Cloudflare account ID
-# Until both secrets are added, the deploy step is skipped (the workflow
-# still passes) so this doesn't block anything on this repo by itself.
+# If either secret is missing, the deploy step just fails with a clear auth
+# error from wrangler-action rather than the workflow being skipped — the
+# `secrets` context isn't a valid `if:` conditional (GitHub Actions doesn't
+# expose it there), so a previous version of this gate silently made the
+# entire workflow file fail YAML parsing instead.
 on:
   push:
     branches: [main, claude/anand-techno-fab-website-tnqqab]
@@ -29,7 +32,6 @@ jobs:
       - run: npm run build
 
       - name: Deploy to Cloudflare Pages
-        if: ${{ vars.CLOUDFLARE_ACCOUNT_ID != '' || secrets.CLOUDFLARE_ACCOUNT_ID != '' }}
         uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
