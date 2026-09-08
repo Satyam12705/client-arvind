@@ -1,42 +1,26 @@
-import { useEffect, useState, type ReactNode } from "react";
+import { useEffect, type ReactNode } from "react";
 import { useLocation, Routes } from "react-router-dom";
 
-const OUT_MS = 240;
-
 /**
- * Route-level page transition. The chrome (Navbar/Footer/ContactDock) stays
- * mounted and static across navigation — only the routed page content
- * crossfades. Renders the outgoing page during a brief fade/slide-out, then
- * swaps to the new route's content once that finishes. Respects
- * prefers-reduced-motion via the global CSS rule that collapses animation
- * durations, so the swap becomes effectively instant for those users.
+ * Scrolls to top on every route change and renders the matched route.
+ *
+ * Previously crossfaded the outgoing/incoming page via an opacity+translateY
+ * animation. Every page's top section is a dark (bg-charcoal) hero
+ * (PageHero, or Home's own hero), while the shared Layout wrapper behind the
+ * transitioning content is light (bg-paper) — so the animation's low-opacity
+ * frames let that light background show through beneath the semi-transparent
+ * dark hero, producing a visible light "flash" on every single page change.
+ * Fixing that without either changing Layout's background (which many
+ * sections rely on by omitting their own bg-* class) or auditing every
+ * section to set one explicitly wasn't worth it for a purely decorative
+ * effect — an instant swap has no such artifact.
  */
 export default function RouteTransition({ children }: { children: ReactNode }) {
   const location = useLocation();
-  const [displayLocation, setDisplayLocation] = useState(location);
-  const [stage, setStage] = useState<"in" | "out">("in");
 
   useEffect(() => {
-    if (location.pathname !== displayLocation.pathname) {
-      setStage("out");
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    window.scrollTo({ top: 0, behavior: "instant" });
   }, [location.pathname]);
 
-  useEffect(() => {
-    if (stage !== "out") return;
-    const t = window.setTimeout(() => {
-      window.scrollTo({ top: 0, behavior: "instant" });
-      setDisplayLocation(location);
-      setStage("in");
-    }, OUT_MS);
-    return () => window.clearTimeout(t);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [stage]);
-
-  return (
-    <div key={displayLocation.pathname} className={stage === "out" ? "route-fade-out" : "route-fade-in"}>
-      <Routes location={displayLocation}>{children}</Routes>
-    </div>
-  );
+  return <Routes location={location}>{children}</Routes>;
 }
