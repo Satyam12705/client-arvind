@@ -284,18 +284,6 @@ body {
   animation: route-fade-out 240ms ease-in both;
 }
 
-/* Fluid cursor — desktop pointer:fine only, decorative trail layered on top
-   of the normal OS pointer (which stays visible and behaves as it does on
-   any site; this doesn't replace it). */
-.fluid-cursor-canvas {
-  position: fixed;
-  inset: 0;
-  width: 100vw;
-  height: 100vh;
-  z-index: 150;
-  pointer-events: none;
-}
-
 @keyframes wa-pulse {
   0%, 100% {
     opacity: 0;
