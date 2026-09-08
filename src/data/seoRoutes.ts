@@ -148,3 +148,59 @@ export function getStateRoutes(): StateRouteInfo[] {
   }
   return Array.from(seen.entries()).map(([key, name]) => ({ slug: slugify(key), name }));
 }
+
+// --- Shared title/description logic for the pSEO detail pages ---
+// Used by both ServiceDetail.tsx/LocationDetail.tsx (client render, live
+// admin-edited content via useContent()) and functions/_middleware.ts (edge
+// meta-tag rewrite for bots/social crawlers, D1 content read directly) so
+// the two can never drift out of sync with each other.
+//
+// Typed loosely (string[] categories, not ProjectCategory[]) because the
+// admin-editable content arrives as parsed JSON with widened types.
+export interface SeoServiceLike {
+  number: string;
+  title: string;
+  body: string;
+}
+
+export interface SeoProjectLike {
+  location: string;
+  client: string;
+  workDoneCr: number;
+  categories: string[];
+}
+
+export function computeServiceSeo<P extends SeoProjectLike>(service: SeoServiceLike, projects: P[]) {
+  const categories: string[] = SERVICE_NUMBER_TO_CATEGORIES[service.number] ?? [];
+  const relatedProjects = projects.filter((p) => p.categories.some((c) => categories.includes(c)));
+  const states = Array.from(
+    new Set(
+      relatedProjects
+        .map((p) => p.location.split(",").map((s) => s.trim()).pop()!)
+        .filter((s) => s.toLowerCase() !== "india"),
+    ),
+  );
+  const totalCr = relatedProjects.reduce((sum, p) => sum + p.workDoneCr, 0);
+  const title = `${service.title} Contractor | Anand Techno-Fab LLP`;
+  const description = relatedProjects.length
+    ? `${service.body} ${relatedProjects.length} project reference${relatedProjects.length === 1 ? "" : "s"} worth ₹${totalCr.toFixed(2)} Cr across ${states.join(", ")}.`
+    : service.body;
+  return { title, description, relatedProjects, states, totalCr };
+}
+
+export function computeLocationSeo<P extends SeoProjectLike>(stateSlug: string, projects: P[]) {
+  const matches = projects.filter((p) => {
+    const parts = p.location.split(",").map((s) => s.trim());
+    const name = parts[parts.length - 1];
+    return name && slugify(name) === stateSlug;
+  });
+  if (matches.length === 0) return null;
+
+  const stateName = matches[0].location.split(",").map((s) => s.trim()).pop()!;
+  const totalCr = matches.reduce((sum, p) => sum + p.workDoneCr, 0);
+  const categories = Array.from(new Set(matches.flatMap((p) => p.categories)));
+  const clients = Array.from(new Set(matches.map((p) => p.client)));
+  const title = `${stateName} Infrastructure Contractor | Anand Techno-Fab LLP`;
+  const description = `${matches.length} project${matches.length === 1 ? "" : "s"} worth ₹${totalCr.toFixed(2)} Cr executed in ${stateName} for ${clients.join(", ")} — ${categories.join(", ").toLowerCase()} work by Anand Techno-Fab LLP.`;
+  return { title, description, stateName, matches, totalCr, categories, clients };
+}

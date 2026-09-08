@@ -3,7 +3,7 @@ import { Link, Navigate, useParams } from "react-router-dom";
 import PageHero from "../components/PageHero";
 import Reveal from "../components/Reveal";
 import Seo from "../components/Seo";
-import { SERVICE_NUMBER_TO_CATEGORIES, slugify } from "../data/seoRoutes";
+import { computeServiceSeo, slugify } from "../data/seoRoutes";
 import { useContent } from "../lib/content";
 
 export default function ServiceDetail() {
@@ -19,17 +19,7 @@ export default function ServiceDetail() {
     return <Navigate to="/services" replace />;
   }
 
-  const categories: string[] = SERVICE_NUMBER_TO_CATEGORIES[service.number] ?? [];
-  const relatedProjects = projects.filter((p) => p.categories.some((c) => categories.includes(c)));
-  const states = Array.from(
-    new Set(relatedProjects.map((p) => p.location.split(",").map((s) => s.trim()).pop()!).filter((s) => s.toLowerCase() !== "india")),
-  );
-  const totalCr = relatedProjects.reduce((sum, p) => sum + p.workDoneCr, 0);
-
-  const title = `${service.title} Contractor | Anand Techno-Fab LLP`;
-  const description = relatedProjects.length
-    ? `${service.body} ${relatedProjects.length} project reference${relatedProjects.length === 1 ? "" : "s"} worth ₹${totalCr.toFixed(2)} Cr across ${states.join(", ")}.`
-    : service.body;
+  const { title, description, relatedProjects, states, totalCr } = computeServiceSeo(service, projects);
 
   const serviceJsonLd = {
     "@context": "https://schema.org",

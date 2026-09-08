@@ -3,39 +3,25 @@ import { Link, Navigate, useParams } from "react-router-dom";
 import PageHero from "../components/PageHero";
 import Reveal from "../components/Reveal";
 import Seo from "../components/Seo";
-import { SERVICE_NUMBER_TO_CATEGORIES, slugify } from "../data/seoRoutes";
+import { computeLocationSeo, SERVICE_NUMBER_TO_CATEGORIES, slugify } from "../data/seoRoutes";
 import { useContent } from "../lib/content";
 
 export default function LocationDetail() {
   const { state: stateSlug } = useParams<{ state: string }>();
   const { projects, specializations } = useContent();
 
-  const matches = useMemo(
-    () =>
-      projects.filter((p) => {
-        const parts = p.location.split(",").map((s) => s.trim());
-        const name = parts[parts.length - 1];
-        return name && slugify(name) === stateSlug;
-      }),
-    [projects, stateSlug],
-  );
+  const result = useMemo(() => computeLocationSeo(stateSlug ?? "", projects), [projects, stateSlug]);
 
-  if (matches.length === 0) {
+  if (!result) {
     return <Navigate to="/locations" replace />;
   }
 
-  const stateName = matches[0].location.split(",").map((s) => s.trim()).pop()!;
-  const totalCr = matches.reduce((sum, p) => sum + p.workDoneCr, 0);
-  const categories = Array.from(new Set(matches.flatMap((p) => p.categories)));
-  const clients = Array.from(new Set(matches.map((p) => p.client)));
+  const { title, description, stateName, matches, totalCr, categories, clients } = result;
 
   const relatedServices = specializations.filter((s) => {
     const cats = SERVICE_NUMBER_TO_CATEGORIES[s.number] ?? [];
     return cats.some((c) => categories.includes(c));
   });
-
-  const title = `${stateName} Infrastructure Contractor | Anand Techno-Fab LLP`;
-  const description = `${matches.length} project${matches.length === 1 ? "" : "s"} worth ₹${totalCr.toFixed(2)} Cr executed in ${stateName} for ${clients.join(", ")} — ${categories.join(", ").toLowerCase()} work by Anand Techno-Fab LLP.`;
 
   const itemListJsonLd = {
     "@context": "https://schema.org",
