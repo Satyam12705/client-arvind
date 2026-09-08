@@ -65,7 +65,7 @@ export default function About() {
               {aboutContent.leadership.heading}
             </h2>
             <p className="mt-6 text-charcoal/80 leading-relaxed max-w-lg">{aboutContent.leadership.body}</p>
-            <div className="mt-8 grid grid-cols-2 gap-6 border-t border-concrete pt-6 max-w-md">
+            <div className={`mt-8 grid gap-6 border-t border-concrete pt-6 max-w-md ${company.partners.length > 1 ? "grid-cols-2" : "grid-cols-1"}`}>
               {company.partners.map((p) => (
                 <div key={p.name}>
                   <p className="label-eyebrow text-steel">{p.role}</p>
@@ -155,7 +155,7 @@ export default function About() {
           <InfoRow label="Legal Name" value={company.legalName} />
           <InfoRow label="Ownership" value={company.ownership} />
           <InfoRow
-            label="Partners"
+            label={company.partners.length > 1 ? "Partners" : "Partner"}
             value={company.partners.map((p) => `${p.name} (${p.role})`).join(", ")}
           />
           <InfoRow label="Registered / Operational Address" value={company.registeredAddress} />

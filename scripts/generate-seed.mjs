@@ -179,7 +179,7 @@ const aboutContent = {
     eyebrowIndex: "02",
     eyebrowLabel: "Leadership",
     heading: "Hands-on leadership, on every site",
-    body: "Anand Techno-Fab LLP is led by two partners — Mr. Amit Singh Rajput as Partner & CEO, and Mr. Suneel Kumar Singh as Partner & CFO. Together they carry the twenty years of field experience behind the company's journey from Anand Construction in 2004 to Anand Techno-Fab LLP today, overseeing execution, quality and client relationships across every concurrent project site.",
+    body: "Anand Techno-Fab LLP is led by Mr. Amit Singh Rajput, Partner & CEO, who carries the twenty years of field experience behind the company's journey from Anand Construction in 2004 to Anand Techno-Fab LLP today, overseeing execution, quality and client relationships across every concurrent project site.",
   },
   whatWeDo: { eyebrowIndex: "03", eyebrowLabel: "What We Do", heading: "An upcoming construction company undertaking turnkey projects" },
   approach: {

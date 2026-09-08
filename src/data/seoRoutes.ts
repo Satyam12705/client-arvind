@@ -41,7 +41,7 @@ export const STATIC_SEO: Record<string, StaticSeoEntry> = {
   "/about": {
     title: "About Us | Anand Techno-Fab LLP",
     description:
-      "Anand Techno-Fab LLP traces back to 2004 as Anand Construction — 20+ years of infrastructure execution, now an LLP led by Amit Singh Rajput and Suneel Kumar Singh, headquartered in Ahmedabad, Gujarat.",
+      "Anand Techno-Fab LLP traces back to 2004 as Anand Construction — 20+ years of infrastructure execution, now an LLP led by Amit Singh Rajput, headquartered in Ahmedabad, Gujarat.",
     changefreq: "monthly",
     priority: 0.8,
   },

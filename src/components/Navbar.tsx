@@ -74,28 +74,34 @@ export default function Navbar() {
               />
             </Link>
 
-            <nav className="hidden xl:flex items-center gap-4 2xl:gap-8 shrink-0">
-              {navLinks.map((item) => (
-                <NavLink
-                  key={item.to}
-                  to={item.to}
-                  className="group relative py-2 label-eyebrow text-[0.72rem] 2xl:text-[0.78rem] text-charcoal/65 hover:text-charcoal transition-colors whitespace-nowrap"
-                >
-                  {({ isActive }) => (
-                    <>
-                      {item.label}
-                      <span
-                        className={`absolute left-0 right-0 -bottom-0.5 h-[2px] bg-rust origin-center transition-transform duration-300 ${
-                          isActive ? "scale-x-100" : "scale-x-0 group-hover:scale-x-100"
-                        }`}
-                      />
-                    </>
-                  )}
-                </NavLink>
-              ))}
-            </nav>
+            {/* Nav links + CTA grouped together so justify-between on the row
+                above only opens one flexible gap (logo <-> this group) — with
+                the group split into two separate flex children, removing a
+                nav link shrank the links block and justify-between widened
+                *both* surrounding gaps to compensate, leaving a visibly
+                oversized, unbalanced gap right before the CTA button. */}
+            <div className="hidden xl:flex items-center gap-8 2xl:gap-12 shrink-0">
+              <nav className="flex items-center gap-4 2xl:gap-8 shrink-0">
+                {navLinks.map((item) => (
+                  <NavLink
+                    key={item.to}
+                    to={item.to}
+                    className="group relative py-2 label-eyebrow text-[0.72rem] 2xl:text-[0.78rem] text-charcoal/65 hover:text-charcoal transition-colors whitespace-nowrap"
+                  >
+                    {({ isActive }) => (
+                      <>
+                        {item.label}
+                        <span
+                          className={`absolute left-0 right-0 -bottom-0.5 h-[2px] bg-rust origin-center transition-transform duration-300 ${
+                            isActive ? "scale-x-100" : "scale-x-0 group-hover:scale-x-100"
+                          }`}
+                        />
+                      </>
+                    )}
+                  </NavLink>
+                ))}
+              </nav>
 
-            <div className="hidden xl:flex items-center shrink-0">
               <Link
                 to="/contact"
                 className="group inline-flex items-center gap-2 whitespace-nowrap bg-charcoal text-paper px-4 2xl:px-6 py-3 label-eyebrow text-[0.72rem] 2xl:text-[0.78rem] overflow-hidden relative hover:shadow-[0_4px_18px_rgba(184,83,31,0.35)] transition-shadow duration-300"

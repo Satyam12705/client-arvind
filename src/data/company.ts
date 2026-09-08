@@ -18,7 +18,6 @@ export const company = {
       role: "Partner & CEO",
       photo: "/images/team/amit-singh-rajput.jpg",
     },
-    { name: "Mr. Suneel Kumar Singh", role: "Partner & CFO" },
   ],
   registeredAddress:
     "E-520, Ganesh Glory 11, Jagatpur Road, S.G. Highway, Gota, Ahmedabad – 382470, Gujarat, India",
