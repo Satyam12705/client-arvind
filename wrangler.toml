@@ -9,12 +9,11 @@ compatibility_flags = ["nodejs_compat"]
 pages_build_output_dir = "dist"
 
 # --- Admin panel data store ---
-# Replace database_id below with the id printed by `wrangler d1 create anand-techno-fab-content`.
-# See README.md "Admin Panel Setup" for the full one-time setup.
+# Database provisioned in the active Cloudflare account.
 [[d1_databases]]
 binding = "DB"
 database_name = "anand-techno-fab-content"
-database_id = "8fe0b5ce-44b9-43cd-a55b-caf676c05ee2"
+database_id = "44cefad6-714f-4ff3-8b9c-81d19081ff6a"
 
 # --- Admin panel media (images/videos/logo uploads) ---
 # Stored on Cloudinary's free tier instead of R2 — no bucket to provision.

@@ -157,7 +157,6 @@ export default function Home() {
 
       {/* 3. ABOUT / JOURNEY — light, giant full-width stacked headline, asymmetric body below */}
       <section className="relative container-edge py-24 md:py-32 overflow-hidden">
-        <div aria-hidden="true" className="absolute top-0 inset-x-0 h-20 bg-gradient-to-b from-charcoal to-transparent pointer-events-none" />
         <BgNumeral>{sections.about.eyebrowIndex}</BgNumeral>
         <div className="relative">
           <TechTag className="mb-6">{sections.about.eyebrowLabel}</TechTag>
