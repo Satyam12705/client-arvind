@@ -40,25 +40,35 @@ export const onRequestPost: PagesFunction<Env> = async ({ request, env }) => {
 
   const id = crypto.randomUUID();
 
+  // Email and D1 are independent, both best-effort — either one succeeding
+  // is enough to tell the visitor their enquiry went through. Previously the
+  // D1 insert wasn't wrapped, so a missing "enquiries" table (e.g. migration
+  // 0005 not yet applied to the live database) threw an unhandled error and
+  // failed the whole request with a 500 — even on requests where the email
+  // itself sent successfully via Resend.
   let emailSent = false;
-  let emailError: string | null = null;
   try {
     await sendEnquiryEmail(env, fields);
     emailSent = true;
   } catch (err) {
-    // Best-effort: a Resend outage or a not-yet-configured RESEND_API_KEY
-    // secret must never make a real enquiry disappear. It's still saved to
-    // D1 below either way — logged here so it's visible in
-    // `wrangler pages deployment tail` for whoever's watching.
-    emailError = err instanceof Error ? err.message : String(err);
-    console.error("Enquiry email failed:", emailError);
+    console.error("Enquiry email failed:", err instanceof Error ? err.message : String(err));
   }
 
-  await env.DB.prepare(
-    "INSERT INTO enquiries (id, name, company_name, phone, email, location, service, requirement, email_sent, created_at) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, datetime('now'))"
-  )
-    .bind(id, fields.name, fields.companyName, fields.phone, fields.email, fields.location, fields.service, fields.requirement, emailSent ? 1 : 0)
-    .run();
+  let dbSaved = false;
+  try {
+    await env.DB.prepare(
+      "INSERT INTO enquiries (id, name, company_name, phone, email, location, service, requirement, email_sent, created_at) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, datetime('now'))"
+    )
+      .bind(id, fields.name, fields.companyName, fields.phone, fields.email, fields.location, fields.service, fields.requirement, emailSent ? 1 : 0)
+      .run();
+    dbSaved = true;
+  } catch (err) {
+    console.error("Enquiry DB insert failed:", err instanceof Error ? err.message : String(err));
+  }
 
-  return json({ ok: true, id, emailSent });
+  if (!emailSent && !dbSaved) {
+    return json({ ok: false, error: "Failed to record enquiry" }, { status: 500 });
+  }
+
+  return json({ ok: true, id, emailSent, dbSaved });
 };
