@@ -86,7 +86,7 @@ export default function Navbar() {
                   <NavLink
                     key={item.to}
                     to={item.to}
-                    className="group relative py-2 label-eyebrow text-[0.72rem] 2xl:text-[0.78rem] text-charcoal/65 hover:text-charcoal transition-colors whitespace-nowrap"
+                    className="group relative py-2 label-eyebrow text-[0.85rem] 2xl:text-[0.92rem] text-charcoal/65 hover:text-charcoal transition-colors whitespace-nowrap"
                   >
                     {({ isActive }) => (
                       <>
@@ -104,7 +104,7 @@ export default function Navbar() {
 
               <Link
                 to="/contact"
-                className="group inline-flex items-center gap-2 whitespace-nowrap bg-charcoal text-paper px-4 2xl:px-6 py-3 label-eyebrow text-[0.72rem] 2xl:text-[0.78rem] overflow-hidden relative hover:shadow-[0_4px_18px_rgba(184,83,31,0.35)] transition-shadow duration-300"
+                className="group inline-flex items-center gap-2 whitespace-nowrap bg-charcoal text-paper px-4 2xl:px-6 py-3 label-eyebrow text-[0.85rem] 2xl:text-[0.92rem] overflow-hidden relative hover:shadow-[0_4px_18px_rgba(184,83,31,0.35)] transition-shadow duration-300"
               >
                 <span className="absolute inset-0 bg-rust origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-300 ease-out" />
                 <span className="relative">{siteSettings.navCtaLabel}</span>
@@ -142,7 +142,7 @@ export default function Navbar() {
                   key={item.to}
                   to={item.to}
                   className={({ isActive }) =>
-                    `py-3 border-b border-concrete/70 label-eyebrow ${
+                    `py-3 border-b border-concrete/70 label-eyebrow text-[0.9rem] ${
                       isActive ? "text-rust" : "text-charcoal/80"
                     }`
                   }

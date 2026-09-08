@@ -4,48 +4,48 @@ import Layout from "./components/Layout";
 import RouteTransition from "./components/RouteTransition";
 import { ContentProvider } from "./lib/content";
 import Home from "./pages/Home";
+import About from "./pages/About";
+import Services from "./pages/Services";
+import Projects from "./pages/Projects";
+import Capabilities from "./pages/Capabilities";
+import QualitySafety from "./pages/QualitySafety";
+import Certifications from "./pages/Certifications";
+import Gallery from "./pages/Gallery";
+import Contact from "./pages/Contact";
+import Locations from "./pages/Locations";
+import LocationDetail from "./pages/LocationDetail";
+import ServiceDetail from "./pages/ServiceDetail";
+import NotFound from "./pages/NotFound";
 import AdminRoute from "./components/admin/AdminRoute";
 
-// Every route below is fetched on first navigation to it rather than bundled
-// into the initial script — Home stays eager since it's the near-universal
-// landing page (no extra chunk round-trip for the page that matters most for
-// LCP), and the admin panel (its own editors + media picker) is pure dead
-// weight for the ~99% of visitors who never open /admin.
-const About = lazy(() => import("./pages/About"));
-const Services = lazy(() => import("./pages/Services"));
-const Projects = lazy(() => import("./pages/Projects"));
-const Capabilities = lazy(() => import("./pages/Capabilities"));
-const QualitySafety = lazy(() => import("./pages/QualitySafety"));
-const Certifications = lazy(() => import("./pages/Certifications"));
-const Gallery = lazy(() => import("./pages/Gallery"));
-const Contact = lazy(() => import("./pages/Contact"));
-const Locations = lazy(() => import("./pages/Locations"));
-const LocationDetail = lazy(() => import("./pages/LocationDetail"));
-const ServiceDetail = lazy(() => import("./pages/ServiceDetail"));
-const NotFound = lazy(() => import("./pages/NotFound"));
+// Public pages are bundled eagerly (like before code-splitting was tried
+// here) — each one is only 1-3 KB gzipped, so splitting them saved little
+// bundle size but cost a visible blank flash on every first visit to a page
+// while its chunk fetched over the network (Suspense had nothing to show
+// during that gap). The admin panel is the one route worth lazy-loading:
+// its own editors + media picker are real weight, and it's never hit by
+// public traffic, so there's no navigation-flicker cost to worry about.
 const AdminLogin = lazy(() => import("./pages/admin/Login"));
 const AdminDashboard = lazy(() => import("./pages/admin/Dashboard"));
 
 function PublicSite() {
   return (
     <Layout>
-      <Suspense fallback={null}>
-        <RouteTransition>
-          <Route path="/" element={<Home />} />
-          <Route path="/about" element={<About />} />
-          <Route path="/services" element={<Services />} />
-          <Route path="/services/:slug" element={<ServiceDetail />} />
-          <Route path="/projects" element={<Projects />} />
-          <Route path="/locations" element={<Locations />} />
-          <Route path="/locations/:state" element={<LocationDetail />} />
-          <Route path="/capabilities" element={<Capabilities />} />
-          <Route path="/quality-safety" element={<QualitySafety />} />
-          <Route path="/certifications" element={<Certifications />} />
-          <Route path="/gallery" element={<Gallery />} />
-          <Route path="/contact" element={<Contact />} />
-          <Route path="*" element={<NotFound />} />
-        </RouteTransition>
-      </Suspense>
+      <RouteTransition>
+        <Route path="/" element={<Home />} />
+        <Route path="/about" element={<About />} />
+        <Route path="/services" element={<Services />} />
+        <Route path="/services/:slug" element={<ServiceDetail />} />
+        <Route path="/projects" element={<Projects />} />
+        <Route path="/locations" element={<Locations />} />
+        <Route path="/locations/:state" element={<LocationDetail />} />
+        <Route path="/capabilities" element={<Capabilities />} />
+        <Route path="/quality-safety" element={<QualitySafety />} />
+        <Route path="/certifications" element={<Certifications />} />
+        <Route path="/gallery" element={<Gallery />} />
+        <Route path="/contact" element={<Contact />} />
+        <Route path="*" element={<NotFound />} />
+      </RouteTransition>
     </Layout>
   );
 }
