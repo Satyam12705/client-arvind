@@ -80,7 +80,7 @@ export default function Home() {
         <div className="absolute inset-0 bg-gradient-to-r from-charcoal/75 via-charcoal/25 to-transparent" />
 
         <div className="container-edge relative z-10 pb-10 md:pb-16 pt-24 layer-isolate">
-          <div className="animate-hero-in mb-4" style={{ animationDelay: "60ms" }}>
+          <div className="animate-hero-in mb-5" style={{ animationDelay: "60ms" }}>
             <TechTag dark onImage>{home.heroTechTag}</TechTag>
           </div>
           <p className="animate-hero-in label-eyebrow text-rust-light mb-4" style={{ animationDelay: "160ms" }}>
@@ -92,10 +92,10 @@ export default function Home() {
             baseDelay={260}
             wordDelay={55}
             lines={[home.heroHeadlineLine1, home.heroHeadlineLine2]}
-            className="text-white font-semibold uppercase leading-[0.98] tracking-tight text-cinema-display max-w-6xl break-words"
+            className="text-white font-semibold uppercase leading-[0.98] tracking-tight text-cinema-display break-words"
           />
           <p
-            className="animate-hero-in mt-5 max-w-xl text-ivory/80 text-base md:text-lg leading-relaxed"
+            className="animate-hero-in mt-6 max-w-xl text-ivory/80 text-base md:text-lg leading-relaxed"
             style={{ animationDelay: "480ms" }}
           >
             {home.heroIntro}
