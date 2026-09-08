@@ -74,12 +74,14 @@ body {
   font-size: clamp(2.1rem, 1.65rem + 2.4vw, 3.75rem);
 }
 
-/* Cinematic-scale display type — hero headline, up to ~112px on wide desktop.
-   The vw coefficient is deliberately conservative so a long single word
-   (e.g. "INFRASTRUCTURE.") never grows wider than a narrow mobile viewport —
-   break-words on the element itself is the safety net if it ever does. */
+/* Cinematic-scale display type — hero headline, up to 80px on wide desktop
+   (was 112px; reported as too large, overwhelming the hero section on its
+   two lines of copy). The vw coefficient is deliberately conservative so a
+   long single word (e.g. "INFRASTRUCTURE.") never grows wider than a narrow
+   mobile viewport — break-words on the element itself is the safety net if
+   it ever does. */
 .text-cinema-display {
-  font-size: clamp(1.9rem, 0.85rem + 4.6vw, 7rem);
+  font-size: clamp(1.9rem, 0.85rem + 3.2vw, 5rem);
   overflow-wrap: break-word;
   text-wrap: balance;
 }
