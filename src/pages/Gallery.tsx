@@ -24,14 +24,19 @@ export default function Gallery() {
 
   const showOpener = filter === "All";
   const opener = showOpener ? filtered.find((g) => g.id === OPENER_ID) : undefined;
-  const rest = opener ? filtered.filter((g) => g.id !== opener.id) : filtered;
+  const rest = opener ? filtered.filter((g) => g !== opener) : filtered;
 
   const lightboxItems = filtered.map((g) => ({
     image: g.image,
-    title: g.caption,
+    // The lightbox uses the title as its aria-label, so it must never be blank.
+    title: g.caption?.trim() || g.location?.trim() || "Project site photograph",
     subtitle: g.location,
   }));
-  const indexOf = (item: GalleryItem) => filtered.findIndex((g) => g.id === item.id);
+  // Identity is positional, never by id. The admin form lets an item be saved
+  // with a blank id, and matching on one made every blank-id photo resolve to
+  // the same index — so clicking any of them opened the wrong image. Position
+  // is always unique and needs nothing from the editor.
+  const indexOf = (item: GalleryItem) => filtered.indexOf(item);
 
   return (
     <>
@@ -82,7 +87,7 @@ export default function Gallery() {
                     (item) =>
                       item && (
                         <GalleryFrame
-                          key={item.id}
+                          key={indexOf(item)}
                           item={item}
                           onClick={() => setOpenIndex(indexOf(item))}
                           className="aspect-[4/3]"
@@ -114,7 +119,7 @@ function GalleryFrame({
     <button onClick={onClick} className={`relative overflow-hidden group block w-full ${className}`}>
       <SafeImage
         src={item.image}
-        alt={item.caption}
+        alt={item.caption?.trim() || item.location?.trim() || "Anand Techno-Fab project site photograph"}
         width={800}
         height={600}
         className="w-full h-full object-cover grayscale-[35%] contrast-[1.02] transition-all duration-700 ease-out group-hover:scale-[1.04] group-hover:grayscale-0"
