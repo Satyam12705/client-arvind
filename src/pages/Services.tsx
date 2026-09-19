@@ -4,6 +4,8 @@ import Reveal from "../components/Reveal";
 import Seo from "../components/Seo";
 import { slugify } from "../data/seoRoutes";
 import { useContent } from "../lib/content";
+import SafeImage from "../components/SafeImage";
+import Parallax from "../components/Parallax";
 
 export default function Services() {
   const { specializations, pageHeroes } = useContent();
@@ -30,27 +32,30 @@ export default function Services() {
         {specializations.map((s, i) => (
           <div
             key={s.number}
-            className={`grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 py-14 items-center ${
-              i !== 0 ? "border-t border-concrete" : ""
+            // First row sits directly under the page hero, so its own top
+            // padding would stack on the section's and read as a gap.
+            className={`grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 pb-14 items-center ${
+              i !== 0 ? "border-t border-concrete pt-14" : "pt-0"
             }`}
           >
             <Reveal
               as="div"
-              className={`group lg:col-span-5 aspect-[4/3] overflow-hidden ${
-                i % 2 === 1 ? "lg:order-2" : ""
-              }`}
+              variant={i % 2 === 1 ? "right" : "left"}
+              className={`lg:col-span-5 ${i % 2 === 1 ? "lg:order-2" : ""}`}
             >
-              <img
-                src={s.image}
-                alt={s.title}
-                width={800}
-                height={600}
-                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                loading="lazy"
-                decoding="async"
-              />
+              <Parallax className="zoom-frame aspect-[4/3]" strength={22}>
+                <SafeImage
+                  src={s.image}
+                  alt={s.title}
+                  width={800}
+                  height={600}
+                  className="w-full h-full object-cover"
+                  loading="lazy"
+                  decoding="async"
+                />
+              </Parallax>
             </Reveal>
-            <Reveal as="div" delay={120} className={`lg:col-span-7 ${i % 2 === 1 ? "lg:order-1" : ""}`}>
+            <Reveal as="div" delay={120} variant={i % 2 === 1 ? "left" : "right"} className={`lg:col-span-7 ${i % 2 === 1 ? "lg:order-1" : ""}`}>
               <span className="label-eyebrow text-rust">{s.number}</span>
               <h2 className="mt-3 text-2xl md:text-3xl font-semibold tracking-tight uppercase">
                 {s.title}

@@ -7,10 +7,14 @@ import VideoHero from "../components/VideoHero";
 import BlueprintFrame from "../components/BlueprintFrame";
 import TechTag from "../components/TechTag";
 import ProjectExplorer from "../components/ProjectExplorer";
+import ClientMarquee from "../components/ClientMarquee";
+import Carousel from "../components/Carousel";
 import Seo from "../components/Seo";
 import { useContent } from "../lib/content";
 import { whatsappLink } from "../lib/whatsapp";
 import { useParallax } from "../lib/useParallax";
+import SafeImage from "../components/SafeImage";
+import Rule from "../components/Rule";
 
 function StackedHeading({
   text,
@@ -55,6 +59,7 @@ export default function Home() {
     certifications,
     awards,
     contactContent,
+    clients,
   } = useContent();
   const heroBgRef = useParallax<HTMLDivElement>(0.06, 36);
   const featuredProjects = projects.slice(0, 5);
@@ -76,14 +81,21 @@ export default function Home() {
             className="w-full h-full object-cover"
           />
         </div>
-        <div className="absolute inset-0 bg-gradient-to-t from-charcoal via-charcoal/55 to-charcoal/15" />
-        <div className="absolute inset-0 bg-gradient-to-r from-charcoal/75 via-charcoal/25 to-transparent" />
+        {/* Scrims are deliberately light and short. The previous pair ended on
+            `from-charcoal` (alpha 1.0) at the bottom and stacked a second wash
+            over it, so the footage was fully black behind the headline — the
+            "video is hidden by the text" report. Legibility now comes from
+            .on-media text-shadow on the type itself, so these only need to
+            take the edge off the highlights, and both fade out well before
+            the top/right of the frame. */}
+        <div className="absolute inset-0 bg-[linear-gradient(to_top,rgba(23,24,26,0.78)_0%,rgba(23,24,26,0.40)_22%,rgba(23,24,26,0.08)_50%,transparent_70%)]" />
+        <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(23,24,26,0.45)_0%,rgba(23,24,26,0.10)_42%,transparent_62%)]" />
 
         <div className="container-edge relative z-10 pb-10 md:pb-16 pt-24 layer-isolate">
           <div className="animate-hero-in mb-5" style={{ animationDelay: "60ms" }}>
             <TechTag dark onImage>{home.heroTechTag}</TechTag>
           </div>
-          <p className="animate-hero-in label-eyebrow text-rust-light mb-4" style={{ animationDelay: "160ms" }}>
+          <p className="on-media animate-hero-in label-eyebrow text-rust-light mb-3" style={{ animationDelay: "160ms" }}>
             {home.heroEyebrow}
           </p>
           <AnimatedText
@@ -92,10 +104,10 @@ export default function Home() {
             baseDelay={260}
             wordDelay={55}
             lines={[home.heroHeadlineLine1, home.heroHeadlineLine2]}
-            className="text-white font-semibold uppercase leading-[0.98] tracking-tight text-cinema-display break-words"
+            className="on-media text-white font-semibold uppercase leading-[0.98] tracking-tight text-cinema-display break-words"
           />
           <p
-            className="animate-hero-in mt-6 max-w-xl text-ivory/80 text-base md:text-lg leading-relaxed"
+            className="on-media animate-hero-in mt-5 max-w-lg text-ivory/85 text-sm md:text-base leading-relaxed"
             style={{ animationDelay: "480ms" }}
           >
             {home.heroIntro}
@@ -123,7 +135,7 @@ export default function Home() {
         </div>
 
         <div
-          className="hidden md:flex animate-hero-in absolute bottom-8 right-6 xl:right-10 items-center gap-2 text-ivory/50 label-eyebrow layer-isolate"
+          className="hidden md:flex animate-hero-in animate-float-soft absolute bottom-8 right-6 xl:right-10 items-center gap-2 text-ivory/50 label-eyebrow layer-isolate"
           style={{ animationDelay: "760ms" }}
         >
           <span className="w-6 h-px bg-ivory/30 layer-isolate" />
@@ -144,7 +156,7 @@ export default function Home() {
             </BlueprintFrame>
             <p className="mt-4 label-eyebrow text-rust-light">{heroStat.label}</p>
           </Reveal>
-          <div className="lg:col-span-5 grid grid-cols-1 sm:grid-cols-3 gap-6 lg:gap-8 lg:border-l lg:border-ivory/15 lg:pl-8">
+          <div className="lg:col-span-5 grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-1 2xl:grid-cols-3 gap-6 lg:gap-8 lg:border-l lg:border-ivory/15 lg:pl-8">
             {supportingStats.map((s, i) => (
               <Reveal key={s.label} delay={i * 90} className="min-w-0 border-t border-ivory/15 pt-4">
                 <AnimatedNumber value={s.value} className="block text-3xl md:text-4xl font-semibold tracking-tight text-white" />
@@ -195,9 +207,9 @@ export default function Home() {
 
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14">
             {specializations[0] && (
-              <Reveal className="lg:col-span-7">
+              <Reveal variant="clip" className="lg:col-span-7">
                 <BlueprintFrame className="block aspect-[16/10] overflow-hidden">
-                  <img
+                  <SafeImage
                     src={specializations[0].image}
                     alt={specializations[0].title}
                     width={1600}
@@ -249,7 +261,7 @@ export default function Home() {
           <Reveal>
             <TechTag dark className="mb-6">{sections.projects.eyebrowLabel}</TechTag>
             <div className="flex flex-wrap items-end justify-between gap-6 mb-12 md:mb-16">
-              <h2 className="text-editorial-display font-semibold uppercase tracking-tight leading-[0.98] text-white whitespace-pre-line max-w-xl">
+              <h2 className="text-editorial-display measure-display font-semibold uppercase tracking-tight leading-[0.98] text-white whitespace-pre-line">
                 {sections.projects.heading}
               </h2>
               <Link to="/projects" className="group label-eyebrow text-rust-light hover:text-white inline-flex items-center gap-2">
@@ -270,7 +282,7 @@ export default function Home() {
           <Reveal>
             <TechTag className="mb-6">{sections.capability.eyebrowLabel}</TechTag>
             <div className="flex flex-wrap items-end justify-between gap-6">
-              <h2 className="text-editorial-display font-semibold uppercase tracking-tight leading-[0.98] whitespace-pre-line max-w-xl">
+              <h2 className="text-editorial-display measure-display font-semibold uppercase tracking-tight leading-[0.98] whitespace-pre-line">
                 {sections.capability.heading}
               </h2>
               <Link to="/capabilities" className="group label-eyebrow text-rust hover:text-rust-dark inline-flex items-center gap-2">
@@ -278,22 +290,59 @@ export default function Home() {
               </Link>
             </div>
           </Reveal>
-          <div className="mt-14 md:mt-20 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-x-8 gap-y-10 border-t border-concrete pt-10">
-            {equipmentHighlights.map((e, i) => (
-              <Reveal key={e.label} delay={i * 70}>
-                <AnimatedNumber value={String(e.count)} className="block text-4xl md:text-5xl font-semibold tracking-tight text-charcoal" />
-                <p className="mt-2 label-eyebrow text-steel">{e.label}</p>
-              </Reveal>
-            ))}
-          </div>
+          <Reveal delay={120} className="mt-12 md:mt-16">
+            <Rule />
+            <div className="pt-10">
+            <Carousel ariaLabel="Equipment fleet highlights">
+              {equipmentHighlights.map((e) => (
+                <div
+                  key={e.label}
+                  className="card-lift group shrink-0 w-44 sm:w-52 border border-concrete bg-paper p-6 hover:border-rust"
+                >
+                  <AnimatedNumber
+                    value={String(e.count)}
+                    className="block text-4xl md:text-5xl font-semibold tracking-tight text-charcoal group-hover:text-rust transition-colors duration-300"
+                  />
+                  <p className="mt-2 label-eyebrow text-steel">{e.label}</p>
+                </div>
+              ))}
+              </Carousel>
+            </div>
+          </Reveal>
         </div>
       </section>
+
+      {/* 6b. CLIENTS — logo marquee. Content (and the logo list) is fully
+          admin-editable under the "Clients" group in the dashboard. */}
+      {clients?.items?.length > 0 && (
+        <section className="bg-ivory border-y border-concrete overflow-hidden">
+          <div className="container-edge py-16 md:py-20">
+            <Reveal>
+              <TechTag className="mb-6">{clients.eyebrowLabel}</TechTag>
+              <div className="flex flex-wrap items-end justify-between gap-6">
+                <AnimatedText
+              as="h2"
+              lines={[clients.heading]}
+              wordDelay={38}
+              className="text-3xl md:text-4xl text-balance font-semibold tracking-tight uppercase max-w-xl"
+            />
+                {clients.intro && (
+                  <p className="text-sm text-steel leading-relaxed max-w-md">{clients.intro}</p>
+                )}
+              </div>
+            </Reveal>
+          </div>
+          <Reveal delay={150} variant="scale" className="pb-14 md:pb-16">
+            <ClientMarquee items={clients.items} />
+          </Reveal>
+        </section>
+      )}
 
       {/* 7. FIELDWORK — full-bleed cinematic image with floating supporting frames */}
       <section className="relative bg-charcoal">
         <div className="relative h-[80vh] min-h-[520px] max-h-[820px] overflow-hidden">
           {sections.photography.items[0] && (
-            <img
+            <SafeImage
               src={sections.photography.items[0].image}
               alt={sections.photography.items[0].caption}
               width={1920}
@@ -326,7 +375,7 @@ export default function Home() {
             {sections.photography.items.slice(1).map((item, i) => (
               <Reveal key={item.image} delay={i * 150} className={i === 1 ? "translate-x-10" : ""}>
                 <BlueprintFrame dark className="block w-56 aspect-[4/3] overflow-hidden shadow-2xl">
-                  <img src={item.image} alt={item.caption} width={800} height={600} className="w-full h-full object-cover" loading="lazy" decoding="async" />
+                  <SafeImage src={item.image} alt={item.caption} width={800} height={600} className="w-full h-full object-cover" loading="lazy" decoding="async" />
                 </BlueprintFrame>
               </Reveal>
             ))}
@@ -349,13 +398,13 @@ export default function Home() {
             {certifications.map((c, i) => (
               <Reveal key={c.id} delay={i * 100} className="group relative bg-paper overflow-hidden">
                 <Link to="/certifications" className="block">
-                  <div className="aspect-[4/3] overflow-hidden bg-ivory">
-                    <img
+                  <div className="aspect-[4/3] overflow-hidden bg-white p-3">
+                    <SafeImage
                       src={c.image}
-                      alt={c.standard}
+                      alt={`${c.standard} certificate`}
                       width={800}
-                      height={600}
-                      className="w-full h-full object-cover object-top transition-all duration-500 grayscale-[40%] group-hover:grayscale-0 group-hover:scale-105"
+                      height={1100}
+                      className="w-full h-full object-contain transition-all duration-500 ease-out grayscale-[35%] group-hover:grayscale-0 group-hover:scale-[1.04]"
                       loading="lazy"
                       decoding="async"
                     />
@@ -377,7 +426,7 @@ export default function Home() {
             <TechTag className="mb-6">{sections.recognition.eyebrowLabel}</TechTag>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               {awards.map((a, i) => (
-                <Reveal key={a.id} delay={i * 100} className="border-t border-charcoal/15 pt-5">
+                <Reveal key={a.id} delay={i * 100} className="border-t border-charcoal/15 pt-5 hover:-translate-y-1 transition-transform duration-500 ease-out">
                   <p className="tech-tag text-rust">{a.period}</p>
                   <p className="mt-2 font-semibold">{a.title}</p>
                   <p className="mt-1 text-sm text-steel">{a.issuer}</p>
@@ -394,22 +443,24 @@ export default function Home() {
       {/* 9. FINAL CTA — full-bleed cinematic */}
       <section className="relative bg-charcoal overflow-hidden">
         <div className="absolute inset-0">
-          <img
+          <SafeImage
             src={sections.finalCta.backgroundImage}
             alt="Structural fabrication and welding work"
             width={1920}
             height={1080}
-            className="w-full h-full object-cover opacity-45"
+            className="w-full h-full object-cover opacity-80"
             loading="lazy"
             decoding="async"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-charcoal via-charcoal/70 to-charcoal/40" />
+          {/* Was from-charcoal / via-70% / to-40% over a 45%-opacity image — a
+              combined ~13% of the photo made it through. Now ~45%. */}
+          <div className="absolute inset-0 bg-[linear-gradient(to_top,rgba(23,24,26,0.80)_0%,rgba(23,24,26,0.45)_45%,rgba(23,24,26,0.30)_100%)]" />
         </div>
         <Reveal className="relative container-edge py-28 md:py-40 text-center">
-          <h2 className="text-white text-editorial-display font-semibold uppercase tracking-tight leading-[0.98] whitespace-pre-line max-w-4xl mx-auto">
+          <h2 className="on-media text-white text-cta-display measure-display font-semibold uppercase tracking-tight leading-[1.02] whitespace-pre-line mx-auto">
             {sections.finalCta.heading}
           </h2>
-          <p className="mt-6 text-ivory/70 max-w-lg mx-auto text-lg">{sections.finalCta.body}</p>
+          <p className="on-media mt-5 text-ivory/85 max-w-lg mx-auto text-sm md:text-base leading-relaxed">{sections.finalCta.body}</p>
           <div className="mt-10 flex flex-wrap gap-4 justify-center">
             <MagneticButton>
               <Link

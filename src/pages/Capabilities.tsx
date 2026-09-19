@@ -5,6 +5,7 @@ import StatBlock from "../components/StatBlock";
 import Reveal from "../components/Reveal";
 import Seo from "../components/Seo";
 import { useContent } from "../lib/content";
+import AnimatedText from "../components/AnimatedText";
 
 export default function Capabilities() {
   const { team, equipment, equipmentHighlights, financials, financialNote, pageHeroes, capabilitiesContent } = useContent();
@@ -20,11 +21,14 @@ export default function Capabilities() {
       <section className="container-edge py-16 md:py-24">
         <Reveal>
           <SectionLabel index={capabilitiesContent.team.eyebrowIndex} label={capabilitiesContent.team.eyebrowLabel} />
-          <h2 className="text-3xl md:text-4xl font-semibold tracking-tight uppercase max-w-2xl">
-            {capabilitiesContent.team.heading}
-          </h2>
+          <AnimatedText
+              as="h2"
+              lines={[capabilitiesContent.team.heading]}
+              wordDelay={38}
+              className="text-3xl md:text-4xl text-balance font-semibold tracking-tight uppercase max-w-2xl"
+            />
         </Reveal>
-        <div className="mt-12 grid grid-cols-2 md:grid-cols-5 gap-x-8 gap-y-10">
+        <div className="mt-12 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-x-8 gap-y-10">
           {team.map((t, i) => (
             <StatBlock key={t.label} delay={i * 70} value={String(t.count)} label={t.label} />
           ))}
@@ -37,9 +41,12 @@ export default function Capabilities() {
         <div className="container-edge py-16 md:py-24">
           <Reveal>
             <SectionLabel index={capabilitiesContent.equipment.eyebrowIndex} label={capabilitiesContent.equipment.eyebrowLabel} />
-            <h2 className="text-3xl md:text-4xl font-semibold tracking-tight uppercase max-w-2xl text-white">
-              {capabilitiesContent.equipment.heading}
-            </h2>
+            <AnimatedText
+              as="h2"
+              lines={[capabilitiesContent.equipment.heading]}
+              wordDelay={38}
+              className="text-3xl md:text-4xl text-balance font-semibold tracking-tight uppercase max-w-2xl text-white"
+            />
           </Reveal>
 
           <div className="mt-12 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-x-8 gap-y-8">
@@ -63,9 +70,12 @@ export default function Capabilities() {
         <section className="container-edge py-16 md:py-24">
           <Reveal>
             <SectionLabel index={capabilitiesContent.financials.eyebrowIndex} label={capabilitiesContent.financials.eyebrowLabel} />
-            <h2 className="text-3xl md:text-4xl font-semibold tracking-tight uppercase max-w-2xl">
-              {capabilitiesContent.financials.heading}
-            </h2>
+            <AnimatedText
+              as="h2"
+              lines={[capabilitiesContent.financials.heading]}
+              wordDelay={38}
+              className="text-3xl md:text-4xl text-balance font-semibold tracking-tight uppercase max-w-2xl"
+            />
           </Reveal>
 
           <Reveal delay={150} className="mt-12 flex items-end gap-4 md:gap-10 h-56 border-b border-charcoal/20">

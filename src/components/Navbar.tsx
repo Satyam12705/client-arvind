@@ -17,11 +17,31 @@ export default function Navbar() {
     setOpen(false);
   }, [location.pathname]);
 
+  // Two thresholds, not one. With a single 48px trip point, any scroll that
+  // hovers around it — a trackpad nudge, momentum settling, a touch drag —
+  // flips the compact state on and off repeatedly, and each flip restyles the
+  // bar and retriggers the 300ms height transition. That oscillation is the
+  // header flicker seen when scrolling slowly. Engaging at 72 and only
+  // releasing again below 24 leaves a 48px dead band, so the state changes
+  // once per direction and cannot thrash.
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 48);
-    onScroll();
+    let raf: number | null = null;
+    const read = () => {
+      raf = null;
+      const y = window.scrollY;
+      setScrolled((was) => (was ? y > 24 : y > 72));
+    };
+    // rAF-throttled: scroll fires far more often than the screen repaints, and
+    // this was the only scroll listener in the app still doing work per event.
+    const onScroll = () => {
+      if (raf === null) raf = requestAnimationFrame(read);
+    };
+    read();
     window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      if (raf !== null) cancelAnimationFrame(raf);
+    };
   }, []);
 
   return (
@@ -52,12 +72,22 @@ export default function Navbar() {
       <header className="sticky top-0 z-50 animate-fade-down">
         {/* Main nav */}
         <div
+          // `contain` keeps the one-shot height transition from dirtying
+          // layout for the rest of the page.
+          style={{
+            contain: "layout paint",
+            ...(scrolled ? { boxShadow: "0 1px 0 rgba(0,0,0,0.02)" } : null),
+          }}
           className={`border-b transition-colors duration-300 ${
+            // No backdrop-blur. At 95% opacity there is almost nothing behind
+            // the bar to blur, but toggling backdrop-filter creates and
+            // destroys a compositing layer and forces the browser to
+            // re-composite everything underneath the sticky header on every
+            // state change — expensive, and the second half of the flicker.
             scrolled
-              ? "bg-paper/95 border-concrete backdrop-blur"
+              ? "bg-paper border-concrete"
               : "bg-paper border-concrete/70"
           }`}
-          style={scrolled ? { boxShadow: "0 1px 0 rgba(0,0,0,0.02)" } : undefined}
         >
           <div
             className={`container-edge flex items-center justify-between gap-4 transition-[height] duration-300 ${

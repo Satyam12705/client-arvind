@@ -22,7 +22,7 @@ export default function PageHero({
           {index}
         </span>
       )}
-      <div className="relative container-edge py-20 md:py-28">
+      <div className="relative container-edge py-16 md:py-24">
         {index && (
           <div className="animate-hero-in mb-5" style={{ animationDelay: "20ms" }}>
             <TechTag dark>SECTION {index}</TechTag>
@@ -37,7 +37,7 @@ export default function PageHero({
           baseDelay={160}
           wordDelay={50}
           lines={[title]}
-          className="text-editorial-display font-semibold tracking-tight uppercase text-white max-w-5xl"
+          className="text-editorial-display measure-display-wide font-semibold tracking-tight uppercase text-white"
         />
         {intro && (
           <p

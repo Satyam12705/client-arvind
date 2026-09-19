@@ -77,6 +77,10 @@ const GROUPS: { title: string; keys: { key: keyof ReturnType<typeof useContent>;
     ],
   },
   {
+    title: "Clients",
+    keys: [{ key: "clients", label: "Client Logos & Marquee" }],
+  },
+  {
     title: "Gallery",
     keys: [{ key: "galleryItems", label: "Gallery Photos" }],
   },

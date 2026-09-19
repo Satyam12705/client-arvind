@@ -6,6 +6,7 @@ import MagneticButton from "../components/MagneticButton";
 import Seo from "../components/Seo";
 import { useContent } from "../lib/content";
 import { mailLink, telLink, whatsappLink } from "../lib/whatsapp";
+import AnimatedText from "../components/AnimatedText";
 
 interface FormState {
   name: string;
@@ -67,11 +68,11 @@ export default function Contact() {
 
       {/* Quick contact */}
       <section className="container-edge py-16 md:py-20">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-px bg-concrete border border-concrete">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-px bg-concrete border border-concrete">
           <Reveal
             as="a"
             href={telLink(company.phones[0])}
-            className="block bg-paper p-8 hover:bg-ivory hover:-translate-y-0.5 transition-all duration-300 group"
+            className="card-lift block bg-paper p-8 hover:bg-ivory group"
           >
             <p className="label-eyebrow text-rust">Call</p>
             <p className="mt-3 text-lg font-medium group-hover:text-rust transition-colors">+91 {company.phones[0]}</p>
@@ -81,7 +82,7 @@ export default function Contact() {
             as="a"
             delay={100}
             href={mailLink(company.emails[0])}
-            className="block bg-paper p-8 hover:bg-ivory hover:-translate-y-0.5 transition-all duration-300 group"
+            className="card-lift block bg-paper p-8 hover:bg-ivory group"
           >
             <p className="label-eyebrow text-rust">Email</p>
             <p className="mt-3 text-lg font-medium group-hover:text-rust transition-colors break-all">{company.emails[0]}</p>
@@ -92,7 +93,7 @@ export default function Contact() {
             href={whatsappLink(contactContent.whatsappDefaultMessage, company.whatsappNumber)}
             target="_blank"
             rel="noreferrer"
-            className="block bg-paper p-8 hover:bg-ivory hover:-translate-y-0.5 transition-all duration-300 group"
+            className="card-lift block bg-paper p-8 hover:bg-ivory group"
           >
             <p className="label-eyebrow text-rust">WhatsApp</p>
             <p className="mt-3 text-lg font-medium group-hover:text-rust transition-colors">Start a chat</p>
@@ -106,9 +107,12 @@ export default function Contact() {
         <div className="container-edge py-16 md:py-24 grid grid-cols-1 lg:grid-cols-12 gap-12">
           <Reveal className="lg:col-span-7">
             <SectionLabel index={contactContent.enquiry.eyebrowIndex} label={contactContent.enquiry.eyebrowLabel} />
-            <h2 className="text-3xl md:text-4xl font-semibold tracking-tight uppercase max-w-lg">
-              {contactContent.enquiry.heading}
-            </h2>
+            <AnimatedText
+              as="h2"
+              lines={[contactContent.enquiry.heading]}
+              wordDelay={38}
+              className="text-3xl md:text-4xl text-balance font-semibold tracking-tight uppercase max-w-lg"
+            />
 
             {status !== "success" ? (
               <form onSubmit={onSubmit} className="mt-10 space-y-6">
@@ -207,9 +211,12 @@ export default function Contact() {
 
           <Reveal delay={150} className="lg:col-span-5">
             <SectionLabel index={contactContent.office.eyebrowIndex} label={contactContent.office.eyebrowLabel} />
-            <h2 className="text-3xl md:text-4xl font-semibold tracking-tight uppercase max-w-lg">
-              {contactContent.office.heading}
-            </h2>
+            <AnimatedText
+              as="h2"
+              lines={[contactContent.office.heading]}
+              wordDelay={38}
+              className="text-3xl md:text-4xl text-balance font-semibold tracking-tight uppercase max-w-lg"
+            />
             <p className="mt-6 text-charcoal/80 leading-relaxed">{company.registeredAddress}</p>
 
             <div className="mt-8 space-y-4 border-t border-concrete pt-6">

@@ -36,7 +36,7 @@ export default function Locations() {
       <section className="container-edge py-16 md:py-24">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-px bg-concrete border border-concrete">
           {states.map((s, i) => (
-            <Reveal key={s.slug} delay={i * 100} className="bg-paper p-8 hover:bg-ivory transition-colors duration-300">
+            <Reveal key={s.slug} delay={i * 100} className="card-lift bg-paper p-8 hover:bg-ivory">
               <Link to={`/locations/${s.slug}`} className="block">
                 <p className="text-2xl font-semibold tracking-tight uppercase">{s.name}</p>
                 <p className="mt-3 label-eyebrow text-steel">

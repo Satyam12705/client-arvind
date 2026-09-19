@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import BlueprintFrame from "./BlueprintFrame";
 import TechTag from "./TechTag";
+import SafeImage from "./SafeImage";
 
 interface ExplorerProject {
   id: string;
@@ -34,7 +35,7 @@ export default function ProjectExplorer({
     <div className="grid grid-cols-1 lg:grid-cols-12 gap-0 border border-ivory/15">
       <div className="lg:col-span-8 relative h-[52vh] md:h-[68vh] overflow-hidden bg-charcoal-soft">
         {projects.map((p, i) => (
-          <img
+          <SafeImage
             key={p.id}
             src={p.image}
             alt={p.title}

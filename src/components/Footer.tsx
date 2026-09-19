@@ -31,7 +31,7 @@ export default function Footer() {
           <Reveal>
             <p className="label-eyebrow text-rust-light mb-4">— {footerContent.ctaEyebrow}</p>
             <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-8">
-              <h2 className="text-3xl md:text-5xl font-semibold uppercase tracking-tight text-white max-w-2xl leading-[1.08]">
+              <h2 className="text-3xl md:text-5xl text-balance font-semibold uppercase tracking-tight text-white max-w-2xl leading-[1.08]">
                 {footerContent.ctaHeading}
               </h2>
               <div className="flex flex-wrap gap-4 shrink-0">

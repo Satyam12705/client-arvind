@@ -3,6 +3,9 @@ import SectionLabel from "../components/SectionLabel";
 import Reveal from "../components/Reveal";
 import Seo from "../components/Seo";
 import { useContent } from "../lib/content";
+import SafeImage from "../components/SafeImage";
+import Parallax from "../components/Parallax";
+import AnimatedText from "../components/AnimatedText";
 
 export default function QualitySafety() {
   const { hsePolicy, qualityPolicy, pageHeroes, qualitySafetyContent } = useContent();
@@ -24,9 +27,12 @@ export default function QualitySafety() {
       <section className="container-edge py-16 md:py-24 grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12">
         <Reveal className="lg:col-span-6 order-2 lg:order-1">
           <SectionLabel index={qualitySafetyContent.hse.eyebrowIndex} label={qualitySafetyContent.hse.eyebrowLabel} />
-          <h2 className="text-3xl md:text-4xl font-semibold tracking-tight uppercase max-w-lg">
-            {qualitySafetyContent.hse.heading}
-          </h2>
+          <AnimatedText
+              as="h2"
+              lines={[qualitySafetyContent.hse.heading]}
+              wordDelay={38}
+              className="text-3xl md:text-4xl text-balance font-semibold tracking-tight uppercase max-w-lg"
+            />
           <p className="mt-6 text-charcoal/80 leading-relaxed max-w-lg italic border-l-2 border-rust pl-4">
             &ldquo;{hsePolicy.motto}&rdquo;
           </p>
@@ -39,38 +45,45 @@ export default function QualitySafety() {
             ))}
           </ul>
         </Reveal>
-        <Reveal delay={150} className="lg:col-span-6 order-1 lg:order-2 aspect-[4/3] lg:aspect-auto overflow-hidden group">
-          <img
-            src={qualitySafetyContent.hse.image}
-            alt="Field safety training session"
-            width={800}
-            height={600}
-            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-            loading="lazy"
-            decoding="async"
-          />
+        <Reveal delay={150} variant="clip" className="lg:col-span-6 order-1 lg:order-2">
+          <Parallax className="zoom-frame aspect-[4/3] lg:h-full" strength={24}>
+            <SafeImage
+              src={qualitySafetyContent.hse.image}
+              alt="Field safety training session"
+              width={800}
+              height={600}
+              className="w-full h-full object-cover"
+              loading="lazy"
+              decoding="async"
+            />
+          </Parallax>
         </Reveal>
       </section>
 
       {/* Quality */}
       <section className="bg-ivory border-y border-concrete">
         <div className="container-edge py-16 md:py-24 grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12">
-          <Reveal className="lg:col-span-6 aspect-[4/3] lg:aspect-auto overflow-hidden group">
-            <img
-              src={qualitySafetyContent.quality.image}
-              alt="Employee health checkup camp at project site"
-              width={800}
-              height={600}
-              className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-              loading="lazy"
-              decoding="async"
-            />
+          <Reveal variant="clip" className="lg:col-span-6">
+            <Parallax className="zoom-frame aspect-[4/3] lg:h-full" strength={24}>
+              <SafeImage
+                src={qualitySafetyContent.quality.image}
+                alt="Employee health checkup camp at project site"
+                width={800}
+                height={600}
+                className="w-full h-full object-cover"
+                loading="lazy"
+                decoding="async"
+              />
+            </Parallax>
           </Reveal>
           <Reveal delay={150} className="lg:col-span-6">
             <SectionLabel index={qualitySafetyContent.quality.eyebrowIndex} label={qualitySafetyContent.quality.eyebrowLabel} />
-            <h2 className="text-3xl md:text-4xl font-semibold tracking-tight uppercase max-w-lg">
-              {qualitySafetyContent.quality.heading}
-            </h2>
+            <AnimatedText
+              as="h2"
+              lines={[qualitySafetyContent.quality.heading]}
+              wordDelay={38}
+              className="text-3xl md:text-4xl text-balance font-semibold tracking-tight uppercase max-w-lg"
+            />
             <p className="mt-6 text-charcoal/80 leading-relaxed max-w-lg italic border-l-2 border-rust pl-4">
               &ldquo;{qualityPolicy.motto}&rdquo;
             </p>
@@ -90,14 +103,17 @@ export default function QualitySafety() {
       <section className="container-edge py-16 md:py-24">
         <Reveal>
           <SectionLabel index={qualitySafetyContent.people.eyebrowIndex} label={qualitySafetyContent.people.eyebrowLabel} />
-          <h2 className="text-3xl md:text-4xl font-semibold tracking-tight uppercase max-w-2xl">
-            {qualitySafetyContent.people.heading}
-          </h2>
+          <AnimatedText
+              as="h2"
+              lines={[qualitySafetyContent.people.heading]}
+              wordDelay={38}
+              className="text-3xl md:text-4xl text-balance font-semibold tracking-tight uppercase max-w-2xl"
+            />
         </Reveal>
         <div className="mt-10 grid grid-cols-1 md:grid-cols-3 gap-4">
           {qualitySafetyContent.people.items.map((item, i) => (
-            <Reveal key={item.image} as="figure" delay={i * 100} className="overflow-hidden group">
-              <img
+            <Reveal key={item.image} as="figure" delay={i * 100} variant="clip" className="overflow-hidden group">
+              <SafeImage
                 src={item.image}
                 alt={item.caption}
                 width={800}

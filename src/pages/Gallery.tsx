@@ -4,6 +4,7 @@ import Lightbox from "../components/Lightbox";
 import Reveal from "../components/Reveal";
 import Seo from "../components/Seo";
 import { useContent } from "../lib/content";
+import SafeImage from "../components/SafeImage";
 
 type GalleryItem = ReturnType<typeof useContent>["galleryItems"][number];
 
@@ -111,7 +112,7 @@ function GalleryFrame({
 }) {
   return (
     <button onClick={onClick} className={`relative overflow-hidden group block w-full ${className}`}>
-      <img
+      <SafeImage
         src={item.image}
         alt={item.caption}
         width={800}

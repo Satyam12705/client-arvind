@@ -5,6 +5,7 @@ import Reveal from "../components/Reveal";
 import Seo from "../components/Seo";
 import { computeServiceSeo, slugify } from "../data/seoRoutes";
 import { useContent } from "../lib/content";
+import SafeImage from "../components/SafeImage";
 
 export default function ServiceDetail() {
   const { slug } = useParams<{ slug: string }>();
@@ -79,7 +80,7 @@ export default function ServiceDetail() {
         </div>
 
         <div className="lg:col-span-5">
-          <img src={service.image} alt={service.title} className="w-full aspect-[4/3] object-cover" loading="lazy" decoding="async" />
+          <SafeImage src={service.image} alt={service.title} className="w-full aspect-[4/3] object-cover" loading="lazy" decoding="async" />
         </div>
       </section>
 
@@ -94,12 +95,12 @@ export default function ServiceDetail() {
                 <Reveal
                   key={p.id}
                   delay={(i % 8) * 40}
-                  className="grid grid-cols-2 md:grid-cols-12 gap-2 md:gap-4 py-5 border-b border-charcoal/15 items-center"
+                  className="grid grid-cols-2 lg:grid-cols-12 gap-2 lg:gap-4 py-5 border-b border-charcoal/15 items-center"
                 >
-                  <span className="label-eyebrow text-rust md:col-span-1">{p.year}</span>
-                  <span className="col-span-2 md:col-span-5 font-medium">{p.title}</span>
-                  <span className="text-sm text-steel md:col-span-3">{p.location}</span>
-                  <span className="text-sm font-mono md:col-span-3 md:text-right">₹{p.workDoneCr} Cr</span>
+                  <span className="label-eyebrow text-rust whitespace-nowrap lg:col-span-2">{p.year}</span>
+                  <span className="col-span-2 lg:col-span-5 font-medium">{p.title}</span>
+                  <span className="text-sm text-steel lg:col-span-3">{p.location}</span>
+                  <span className="text-sm font-mono whitespace-nowrap lg:col-span-2 lg:text-right">₹{p.workDoneCr} Cr</span>
                 </Reveal>
               ))}
             </div>
