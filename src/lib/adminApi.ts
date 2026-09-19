@@ -5,6 +5,28 @@ export interface MediaItem {
   size: number;
   createdAt: string;
   url: string;
+  publicId?: string;
+  /** Content keys that still reference this file. */
+  usedBy?: string[];
+  inUse?: boolean;
+}
+
+/** A file present in Cloudinary with no matching media row. */
+export interface StrayMedia {
+  publicId: string;
+  resourceType: string;
+  url: string;
+  size: number;
+  createdAt: string;
+  usedBy: string[];
+  inUse: boolean;
+}
+
+export interface MediaListing {
+  items: MediaItem[];
+  strays: StrayMedia[];
+  cloudinaryError: string | null;
+  totalBytes: number;
 }
 
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
@@ -40,8 +62,10 @@ export function saveContent(key: string, value: unknown): Promise<{ ok: true }> 
   });
 }
 
-export function listMedia(): Promise<{ items: MediaItem[] }> {
-  return request("/api/admin/media");
+export function listMedia(reconcile = false): Promise<MediaListing> {
+  // `reconcile` additionally asks Cloudinary what it actually holds, which is
+  // a slower call, so the picker only does it from the cleanup view.
+  return request(`/api/admin/media${reconcile ? "?reconcile=1" : ""}`);
 }
 
 export async function uploadMedia(file: File): Promise<MediaItem> {
@@ -55,6 +79,18 @@ export async function uploadMedia(file: File): Promise<MediaItem> {
   return res.json();
 }
 
-export function deleteMedia(id: string): Promise<{ ok: true }> {
-  return request(`/api/admin/media/${id}`, { method: "DELETE" });
+export function deleteMedia(id: string, force = false): Promise<{ ok: true }> {
+  const qs = force ? "?force=1" : "";
+  return request(`/api/admin/media/${encodeURIComponent(id)}${qs}`, { method: "DELETE" });
+}
+
+/** Removes a Cloudinary file that has no media row (an upload predating this panel). */
+export function deleteStrayMedia(
+  publicId: string,
+  resourceType: string,
+  force = false
+): Promise<{ ok: true }> {
+  const qs = new URLSearchParams({ publicId, resourceType });
+  if (force) qs.set("force", "1");
+  return request(`/api/admin/media/stray?${qs}`, { method: "DELETE" });
 }
