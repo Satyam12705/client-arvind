@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { optimizedImage, optimizedVideo } from "../lib/cloudinaryUrl";
 
 /**
  * Autoplaying muted background video, cross-faded in over its poster.
@@ -28,6 +29,11 @@ export default function VideoHero({
   alt: string;
   className?: string;
 }) {
+  // Delivered sizes, not upload sizes: the hero video arrives as whatever the
+  // editor uploaded, and a 25 MB file leaves the poster on screen for the
+  // twenty-odd seconds it takes to download.
+  const videoSrc = optimizedVideo(src);
+  const posterSrc = optimizedImage(poster, 1920);
   const [reduceMotion, setReduceMotion] = useState(false);
   const [showVideo, setShowVideo] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -77,7 +83,7 @@ export default function VideoHero({
   if (reduceMotion) {
     return (
       <img
-        src={poster}
+        src={posterSrc}
         alt={alt}
         width={1283}
         height={762}
@@ -92,7 +98,7 @@ export default function VideoHero({
   return (
     <div className={`relative ${className}`}>
       <img
-        src={poster}
+        src={posterSrc}
         alt={alt}
         width={1283}
         height={762}
@@ -121,7 +127,7 @@ export default function VideoHero({
         // poster itself on the connection that decides LCP.
         preload="metadata"
       >
-        <source src={src} type="video/mp4" />
+        <source src={videoSrc} type="video/mp4" />
       </video>
     </div>
   );

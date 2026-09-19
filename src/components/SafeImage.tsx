@@ -1,4 +1,5 @@
 import { useState, type ImgHTMLAttributes, type ReactNode } from "react";
+import { optimizedImage } from "../lib/cloudinaryUrl";
 
 /**
  * An <img> that renders nothing when there is no usable image.
@@ -28,5 +29,8 @@ export default function SafeImage({
   const usable = typeof src === "string" && src.trim().length > 0;
   if (!usable || failedSrc === src) return <>{fallback}</>;
 
-  return <img src={src} onError={() => setFailedSrc(src)} {...rest} />;
+  // Admin uploads are delivered at whatever size they were uploaded at, which
+  // for a phone photo can be several megabytes. Ask Cloudinary for a sensible
+  // one; bundled /images paths pass through unchanged.
+  return <img src={optimizedImage(src)} onError={() => setFailedSrc(src)} {...rest} />;
 }

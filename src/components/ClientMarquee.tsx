@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import { optimizedImage } from "../lib/cloudinaryUrl";
 
 export interface ClientItem {
   name: string;
@@ -131,7 +132,7 @@ function ClientLogo({ client }: { client: ClientItem }) {
     // `w-auto` and a max-height the element measures 0x0 until then, which
     // both suppresses lazy-loading and starves the reveal observer.
     <img
-      src={client.logo}
+      src={optimizedImage(client.logo, 400)}
       alt={client.name}
       loading="lazy"
       decoding="async"
