@@ -2,7 +2,9 @@ import { useMemo, useState } from "react";
 import PageHero from "../components/PageHero";
 import Lightbox from "../components/Lightbox";
 import Reveal from "../components/Reveal";
+import Seo from "../components/Seo";
 import { useContent } from "../lib/content";
+import SafeImage from "../components/SafeImage";
 
 type GalleryItem = ReturnType<typeof useContent>["galleryItems"][number];
 
@@ -33,6 +35,7 @@ export default function Gallery() {
 
   return (
     <>
+      <Seo path="/gallery" breadcrumbs={[{ name: "Home", path: "/" }, { name: "Gallery", path: "/gallery" }]} />
       <PageHero index="07" eyebrow={pageHeroes.gallery.eyebrow} title={pageHeroes.gallery.title} intro={pageHeroes.gallery.intro} />
 
       <section className="container-edge py-16 md:py-24">
@@ -109,9 +112,11 @@ function GalleryFrame({
 }) {
   return (
     <button onClick={onClick} className={`relative overflow-hidden group block w-full ${className}`}>
-      <img
+      <SafeImage
         src={item.image}
         alt={item.caption}
+        width={800}
+        height={600}
         className="w-full h-full object-cover grayscale-[35%] contrast-[1.02] transition-all duration-700 ease-out group-hover:scale-[1.04] group-hover:grayscale-0"
         loading="lazy"
         decoding="async"

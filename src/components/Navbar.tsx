@@ -5,6 +5,10 @@ import { useContent } from "../lib/content";
 
 export default function Navbar() {
   const { nav, company, siteSettings } = useContent();
+  // "Contact" is deliberately left out here — the "Contact Us" button next
+  // to these links (desktop) / below them (mobile menu) already covers it,
+  // so listing it again read as a redundant duplicate link.
+  const navLinks = nav.filter((n) => n.label !== "Home" && n.label !== "Contact");
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const location = useLocation();
@@ -13,11 +17,31 @@ export default function Navbar() {
     setOpen(false);
   }, [location.pathname]);
 
+  // Two thresholds, not one. With a single 48px trip point, any scroll that
+  // hovers around it — a trackpad nudge, momentum settling, a touch drag —
+  // flips the compact state on and off repeatedly, and each flip restyles the
+  // bar and retriggers the 300ms height transition. That oscillation is the
+  // header flicker seen when scrolling slowly. Engaging at 72 and only
+  // releasing again below 24 leaves a 48px dead band, so the state changes
+  // once per direction and cannot thrash.
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 48);
-    onScroll();
+    let raf: number | null = null;
+    const read = () => {
+      raf = null;
+      const y = window.scrollY;
+      setScrolled((was) => (was ? y > 24 : y > 72));
+    };
+    // rAF-throttled: scroll fires far more often than the screen repaints, and
+    // this was the only scroll listener in the app still doing work per event.
+    const onScroll = () => {
+      if (raf === null) raf = requestAnimationFrame(read);
+    };
+    read();
     window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      if (raf !== null) cancelAnimationFrame(raf);
+    };
   }, []);
 
   return (
@@ -48,12 +72,22 @@ export default function Navbar() {
       <header className="sticky top-0 z-50 animate-fade-down">
         {/* Main nav */}
         <div
+          // `contain` keeps the one-shot height transition from dirtying
+          // layout for the rest of the page.
+          style={{
+            contain: "layout paint",
+            ...(scrolled ? { boxShadow: "0 1px 0 rgba(0,0,0,0.02)" } : null),
+          }}
           className={`border-b transition-colors duration-300 ${
+            // No backdrop-blur. At 95% opacity there is almost nothing behind
+            // the bar to blur, but toggling backdrop-filter creates and
+            // destroys a compositing layer and forces the browser to
+            // re-composite everything underneath the sticky header on every
+            // state change — expensive, and the second half of the flicker.
             scrolled
-              ? "bg-paper/95 border-concrete backdrop-blur"
+              ? "bg-paper border-concrete"
               : "bg-paper border-concrete/70"
           }`}
-          style={scrolled ? { boxShadow: "0 1px 0 rgba(0,0,0,0.02)" } : undefined}
         >
           <div
             className={`container-edge flex items-center justify-between gap-4 transition-[height] duration-300 ${
@@ -64,35 +98,43 @@ export default function Navbar() {
               <img
                 src={siteSettings.logo}
                 alt="Anand Techno-Fab LLP"
-                className="h-9 xl:h-11 w-auto transition-all duration-300"
+                width={455}
+                height={238}
+                className="h-11 xl:h-14 w-auto transition-all duration-300"
               />
             </Link>
 
-            <nav className="hidden xl:flex items-center gap-4 2xl:gap-8 shrink-0">
-              {nav.filter((n) => n.label !== "Home").map((item) => (
-                <NavLink
-                  key={item.to}
-                  to={item.to}
-                  className="group relative py-2 label-eyebrow text-[0.72rem] 2xl:text-[0.78rem] text-charcoal/65 hover:text-charcoal transition-colors whitespace-nowrap"
-                >
-                  {({ isActive }) => (
-                    <>
-                      {item.label}
-                      <span
-                        className={`absolute left-0 right-0 -bottom-0.5 h-[2px] bg-rust origin-center transition-transform duration-300 ${
-                          isActive ? "scale-x-100" : "scale-x-0 group-hover:scale-x-100"
-                        }`}
-                      />
-                    </>
-                  )}
-                </NavLink>
-              ))}
-            </nav>
+            {/* Nav links + CTA grouped together so justify-between on the row
+                above only opens one flexible gap (logo <-> this group) — with
+                the group split into two separate flex children, removing a
+                nav link shrank the links block and justify-between widened
+                *both* surrounding gaps to compensate, leaving a visibly
+                oversized, unbalanced gap right before the CTA button. */}
+            <div className="hidden xl:flex items-center gap-8 2xl:gap-12 shrink-0">
+              <nav className="flex items-center gap-4 2xl:gap-8 shrink-0">
+                {navLinks.map((item) => (
+                  <NavLink
+                    key={item.to}
+                    to={item.to}
+                    className="group relative py-2 label-eyebrow text-[0.85rem] 2xl:text-[0.92rem] text-charcoal/65 hover:text-charcoal transition-colors whitespace-nowrap"
+                  >
+                    {({ isActive }) => (
+                      <>
+                        {item.label}
+                        <span
+                          className={`absolute left-0 right-0 -bottom-0.5 h-[2px] bg-rust origin-center transition-transform duration-300 ${
+                            isActive ? "scale-x-100" : "scale-x-0 group-hover:scale-x-100"
+                          }`}
+                        />
+                      </>
+                    )}
+                  </NavLink>
+                ))}
+              </nav>
 
-            <div className="hidden xl:flex items-center shrink-0">
               <Link
                 to="/contact"
-                className="group inline-flex items-center gap-2 whitespace-nowrap bg-charcoal text-paper px-4 2xl:px-6 py-3 label-eyebrow text-[0.72rem] 2xl:text-[0.78rem] overflow-hidden relative hover:shadow-[0_4px_18px_rgba(184,83,31,0.35)] transition-shadow duration-300"
+                className="group inline-flex items-center gap-2 whitespace-nowrap bg-charcoal text-paper px-4 2xl:px-6 py-3 label-eyebrow text-[0.85rem] 2xl:text-[0.92rem] overflow-hidden relative hover:shadow-[0_4px_18px_rgba(184,83,31,0.35)] transition-shadow duration-300"
               >
                 <span className="absolute inset-0 bg-rust origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-300 ease-out" />
                 <span className="relative">{siteSettings.navCtaLabel}</span>
@@ -125,12 +167,12 @@ export default function Navbar() {
         {open && (
           <div className="xl:hidden border-t border-concrete bg-paper animate-fade-up">
             <nav className="container-edge py-4 flex flex-col">
-              {nav.map((item) => (
+              {nav.filter((n) => n.label !== "Contact").map((item) => (
                 <NavLink
                   key={item.to}
                   to={item.to}
                   className={({ isActive }) =>
-                    `py-3 border-b border-concrete/70 label-eyebrow ${
+                    `py-3 border-b border-concrete/70 label-eyebrow text-[0.9rem] ${
                       isActive ? "text-rust" : "text-charcoal/80"
                     }`
                   }

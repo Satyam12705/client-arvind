@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import BlueprintFrame from "./BlueprintFrame";
 import TechTag from "./TechTag";
+import SafeImage from "./SafeImage";
 
 interface ExplorerProject {
   id: string;
@@ -34,10 +35,12 @@ export default function ProjectExplorer({
     <div className="grid grid-cols-1 lg:grid-cols-12 gap-0 border border-ivory/15">
       <div className="lg:col-span-8 relative h-[52vh] md:h-[68vh] overflow-hidden bg-charcoal-soft">
         {projects.map((p, i) => (
-          <img
+          <SafeImage
             key={p.id}
             src={p.image}
             alt={p.title}
+            width={1600}
+            height={900}
             className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ease-out ${
               i === active ? "opacity-100" : "opacity-0"
             }`}
@@ -77,13 +80,17 @@ export default function ProjectExplorer({
           )}
         </div>
 
-        <div className="mt-10 flex flex-wrap gap-2">
+        {/* Horizontally scrolling, 2 rows tall — a flex-wrap grid of these
+            grew taller (more rows) the more projects existed, at one point
+            pushing well past this panel's fixed-height frame. Fixed at 2
+            rows regardless of project count; scrolls sideways instead. */}
+        <div className="explorer-index-scroll mt-10 grid grid-flow-col grid-rows-2 auto-cols-[2.5rem] gap-2 overflow-x-auto pb-2 -mx-8 md:-mx-10 px-8 md:px-10">
           {projects.map((p, i) => (
             <button
               key={p.id}
               onClick={() => setActive(i)}
               aria-label={`Show project ${i + 1}: ${p.title}`}
-              className={`tech-tag w-10 h-10 flex items-center justify-center border transition-all duration-300 ${
+              className={`tech-tag w-10 h-10 flex items-center justify-center border transition-all duration-300 shrink-0 ${
                 i === active
                   ? "border-rust-light bg-rust-light/10 text-rust-light"
                   : "border-ivory/20 text-ivory/50 hover:border-ivory/50 hover:text-ivory"

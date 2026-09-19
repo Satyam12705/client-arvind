@@ -1,14 +1,18 @@
 name: Deploy to Cloudflare Pages
 
-# Runs on push to main, or manually from the Actions tab.
+# Runs on push to main or to this repo's actual default branch (it isn't
+# named "main" here), or manually from the Actions tab.
 # Requires two repository secrets to actually deploy:
 #   CLOUDFLARE_API_TOKEN   — a Cloudflare API token with "Cloudflare Pages: Edit"
 #   CLOUDFLARE_ACCOUNT_ID  — your Cloudflare account ID
-# Until both secrets are added, the deploy step is skipped (the workflow
-# still passes) so this doesn't block anything on this repo by itself.
+# If either secret is missing, the deploy step just fails with a clear auth
+# error from wrangler-action rather than the workflow being skipped — the
+# `secrets` context isn't a valid `if:` conditional (GitHub Actions doesn't
+# expose it there), so a previous version of this gate silently made the
+# entire workflow file fail YAML parsing instead.
 on:
   push:
-    branches: [main]
+    branches: [main, claude/anand-techno-fab-website-tnqqab]
   workflow_dispatch: {}
 
 jobs:
@@ -21,16 +25,26 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          # wrangler@4.127.1 (pinned in package.json) requires Node 22+ and
+          # refuses to run on Node 20, which is what failed the deploy step
+          # (a clear, correct error from wrangler itself — not a config
+          # problem with the step) once the earlier issues were fixed.
+          node-version: 22
           cache: npm
 
       - run: npm ci
       - run: npm run build
 
+      # Runs the wrangler that `npm ci` above already installed (matching the
+      # exact pinned version + lockfile in package.json), instead of
+      # cloudflare/wrangler-action@v3 — which always does its own separate
+      # `npm install wrangler@<version>` in-place and, at every version tried
+      # (its 3.90.0 default and an explicit "4" pin), that install's peer
+      # dependency on @cloudflare/workers-types@^4.x conflicted with this
+      # repo's own already-installed @cloudflare/workers-types@^5.x and broke
+      # with ERESOLVE before wrangler ever got to run.
       - name: Deploy to Cloudflare Pages
-        if: ${{ vars.CLOUDFLARE_ACCOUNT_ID != '' || secrets.CLOUDFLARE_ACCOUNT_ID != '' }}
-        uses: cloudflare/wrangler-action@v3
-        with:
-          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: pages deploy dist --project-name=anand-techno-fab
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: npx wrangler pages deploy dist --project-name=client-arvind

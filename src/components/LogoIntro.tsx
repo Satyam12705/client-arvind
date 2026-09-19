@@ -35,6 +35,18 @@ function decideIntro(introEnabled: boolean): boolean {
   return true;
 }
 
+// Cheap synchronous pre-check for the two conditions that don't need the
+// content fetch (reduced motion, already seen this session) so the very
+// first paint can decide whether to hold up a blocking cover — without it,
+// the real site flashes underneath for as long as /api/content takes to
+// resolve, and the intro then appears "late" and feels rushed once it does.
+function mightShowIntro(): boolean {
+  if (typeof window === "undefined") return false;
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return false;
+  if (sessionStorage.getItem(SESSION_KEY) === "1") return false;
+  return true;
+}
+
 type Phase = "pending" | "construct" | "reveal" | "hold" | "fade" | "done";
 
 /**
@@ -47,9 +59,14 @@ type Phase = "pending" | "construct" | "reveal" | "hold" | "fade" | "done";
 export default function LogoIntro() {
   const ready = useContentReady();
   const content = useContent();
-  const [phase, setPhase] = useState<Phase>("pending");
+  // Lazily seeded from the synchronous pre-check so the blocking cover (a
+  // bare charcoal screen, same markup as "construct" at its resting state)
+  // is present on the very first paint — before the content fetch resolves
+  // — rather than appearing only once `ready` flips true.
+  const [phase, setPhase] = useState<Phase>(() => (mightShowIntro() ? "pending" : "done"));
 
   useEffect(() => {
+    if (phase !== "pending") return;
     if (!ready) return;
     const shouldShow = decideIntro(content.siteSettings.introEnabled !== false);
     if (!shouldShow) {
@@ -57,14 +74,12 @@ export default function LogoIntro() {
       return;
     }
 
-    document.body.style.overflow = "hidden";
     setPhase("construct");
     const toReveal = window.setTimeout(() => setPhase("reveal"), CONSTRUCT_MS);
     const toHold = window.setTimeout(() => setPhase("hold"), CONSTRUCT_MS + REVEAL_MS);
     const toFade = window.setTimeout(() => setPhase("fade"), CONSTRUCT_MS + REVEAL_MS + HOLD_MS);
     const toDone = window.setTimeout(() => {
       setPhase("done");
-      document.body.style.overflow = "";
     }, CONSTRUCT_MS + REVEAL_MS + HOLD_MS + FADE_MS);
 
     return () => {
@@ -72,14 +87,24 @@ export default function LogoIntro() {
       window.clearTimeout(toHold);
       window.clearTimeout(toFade);
       window.clearTimeout(toDone);
-      document.body.style.overflow = "";
     };
+    // Intentionally keyed on `ready` alone — `phase` is read for its
+    // initial-mount value only. Including it would re-run this effect (and
+    // its cleanup, cancelling the just-scheduled timers) on every phase
+    // transition the timers themselves cause.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ready]);
 
-  if (phase === "pending" || phase === "done") return null;
+  useEffect(() => {
+    document.body.style.overflow = phase === "done" ? "" : "hidden";
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [phase]);
 
-  const framed = phase !== "construct";
+  if (phase === "done") return null;
+
+  const framed = phase === "reveal" || phase === "hold" || phase === "fade";
   const logoVisible = phase === "reveal" || phase === "hold" || phase === "fade";
   const arm = 26;
   const frameSize = 168;
@@ -149,6 +174,8 @@ export default function LogoIntro() {
             <img
               src={content.siteSettings.logo}
               alt=""
+              width={455}
+              height={238}
               className={`relative z-10 h-14 md:h-16 w-auto transition-all ease-out ${
                 logoVisible ? "opacity-100 scale-100 blur-0" : "opacity-0 scale-90 blur-md"
               }`}

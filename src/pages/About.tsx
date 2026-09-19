@@ -1,7 +1,10 @@
 import PageHero from "../components/PageHero";
 import SectionLabel from "../components/SectionLabel";
 import Reveal from "../components/Reveal";
+import Seo from "../components/Seo";
 import { useContent } from "../lib/content";
+import Parallax from "../components/Parallax";
+import AnimatedText from "../components/AnimatedText";
 
 export default function About() {
   const { company, timeline, specializations, methodology, commitment, pageHeroes, aboutContent } = useContent();
@@ -9,18 +12,22 @@ export default function About() {
 
   return (
     <>
+      <Seo path="/about" breadcrumbs={[{ name: "Home", path: "/" }, { name: "About", path: "/about" }]} />
       <PageHero index="01" eyebrow={pageHeroes.about.eyebrow} title={pageHeroes.about.title} intro={pageHeroes.about.intro} />
 
       {/* Journey */}
-      <section className="container-edge py-20 md:py-28">
+      <section className="container-edge py-16 md:py-24">
         <Reveal>
           <SectionLabel index={aboutContent.journey.eyebrowIndex} label={aboutContent.journey.eyebrowLabel} />
-          <h2 className="text-3xl md:text-4xl font-semibold tracking-tight uppercase max-w-2xl">
-            {aboutContent.journey.heading}
-          </h2>
+          <AnimatedText
+              as="h2"
+              lines={[aboutContent.journey.heading]}
+              wordDelay={38}
+              className="text-3xl md:text-4xl text-balance font-semibold tracking-tight uppercase max-w-2xl"
+            />
         </Reveal>
 
-        <div className="mt-14 grid grid-cols-1 md:grid-cols-3 gap-10 md:gap-6">
+        <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-10 md:gap-6">
           {timeline.map((t, i) => (
             <Reveal key={t.year} delay={i * 130} className="border-t-2 border-rust pt-5">
               <p className="text-3xl font-semibold tracking-tight">{t.year}</p>
@@ -32,36 +39,41 @@ export default function About() {
       </section>
 
       {/* Leadership */}
-      <section className="container-edge py-20 md:py-28">
+      <section className="container-edge py-16 md:py-24">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center">
-          <Reveal className="lg:col-span-5">
-            <div className="relative aspect-[4/5] overflow-hidden bg-charcoal">
+          <Reveal variant="clip" className="lg:col-span-5 relative">
+            <Parallax className="aspect-[4/5] bg-charcoal" strength={20}>
               {ceo?.photo && (
                 <img
                   src={ceo.photo}
                   alt={`${ceo.name.replace(/^Mr\.\s*/, "")}, ${ceo.role}, Anand Techno-Fab LLP`}
+                  width={800}
+                  height={1080}
                   className="w-full h-full object-cover"
                   loading="lazy"
                   decoding="async"
                 />
               )}
-              <div className="absolute inset-0 bg-gradient-to-t from-charcoal via-charcoal/5 to-transparent" />
-              <div className="absolute inset-x-0 bottom-0 p-6 md:p-7">
-                <p className="label-eyebrow text-rust-light">{ceo?.role}</p>
-                <p className="mt-1.5 text-2xl md:text-3xl font-semibold text-white uppercase tracking-tight leading-tight">
-                  {ceo?.name.replace(/^Mr\.\s*/, "")}
-                </p>
-              </div>
+            </Parallax>
+            <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-charcoal via-charcoal/5 to-transparent" />
+            <div className="absolute inset-x-0 bottom-0 p-6 md:p-7">
+              <p className="label-eyebrow text-rust-light">{ceo?.role}</p>
+              <p className="mt-1.5 text-2xl md:text-3xl font-semibold text-white uppercase tracking-tight leading-tight">
+                {ceo?.name.replace(/^Mr\.\s*/, "")}
+              </p>
             </div>
           </Reveal>
 
-          <Reveal delay={150} className="lg:col-span-7">
+          <Reveal delay={150} variant="right" className="lg:col-span-7">
             <SectionLabel index={aboutContent.leadership.eyebrowIndex} label={aboutContent.leadership.eyebrowLabel} />
-            <h2 className="text-3xl md:text-4xl font-semibold tracking-tight uppercase max-w-lg">
-              {aboutContent.leadership.heading}
-            </h2>
+            <AnimatedText
+              as="h2"
+              lines={[aboutContent.leadership.heading]}
+              wordDelay={38}
+              className="text-3xl md:text-4xl text-balance font-semibold tracking-tight uppercase max-w-lg"
+            />
             <p className="mt-6 text-charcoal/80 leading-relaxed max-w-lg">{aboutContent.leadership.body}</p>
-            <div className="mt-8 grid grid-cols-2 gap-6 border-t border-concrete pt-6 max-w-md">
+            <div className={`mt-8 grid gap-6 border-t border-concrete pt-6 max-w-md ${company.partners.length > 1 ? "grid-cols-2" : "grid-cols-1"}`}>
               {company.partners.map((p) => (
                 <div key={p.name}>
                   <p className="label-eyebrow text-steel">{p.role}</p>
@@ -75,12 +87,15 @@ export default function About() {
 
       {/* What we do */}
       <section className="bg-ivory border-y border-concrete">
-        <div className="container-edge py-20 md:py-28">
+        <div className="container-edge py-16 md:py-24">
           <Reveal>
             <SectionLabel index={aboutContent.whatWeDo.eyebrowIndex} label={aboutContent.whatWeDo.eyebrowLabel} />
-            <h2 className="text-3xl md:text-4xl font-semibold tracking-tight uppercase max-w-2xl">
-              {aboutContent.whatWeDo.heading}
-            </h2>
+            <AnimatedText
+              as="h2"
+              lines={[aboutContent.whatWeDo.heading]}
+              wordDelay={38}
+              className="text-3xl md:text-4xl text-balance font-semibold tracking-tight uppercase max-w-2xl"
+            />
           </Reveal>
           <div className="mt-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {specializations.map((s, i) => (
@@ -99,12 +114,15 @@ export default function About() {
       </section>
 
       {/* Approach / methodology */}
-      <section className="container-edge py-20 md:py-28">
+      <section className="container-edge py-16 md:py-24">
         <Reveal>
           <SectionLabel index={aboutContent.approach.eyebrowIndex} label={aboutContent.approach.eyebrowLabel} />
-          <h2 className="text-3xl md:text-4xl font-semibold tracking-tight uppercase max-w-2xl">
-            {aboutContent.approach.heading}
-          </h2>
+          <AnimatedText
+              as="h2"
+              lines={[aboutContent.approach.heading]}
+              wordDelay={38}
+              className="text-3xl md:text-4xl text-balance font-semibold tracking-tight uppercase max-w-2xl"
+            />
           <p className="mt-4 max-w-2xl text-steel">{aboutContent.approach.body}</p>
         </Reveal>
 
@@ -125,7 +143,7 @@ export default function About() {
 
       {/* Commitment */}
       <section className="bg-charcoal text-ivory">
-        <div className="container-edge py-20 md:py-28 grid grid-cols-1 md:grid-cols-12 gap-10">
+        <div className="container-edge py-16 md:py-24 grid grid-cols-1 md:grid-cols-12 gap-10">
           <Reveal className="md:col-span-4">
             <SectionLabel index={aboutContent.commitmentSection.eyebrowIndex} label={aboutContent.commitmentSection.eyebrowLabel} />
             <h2 className="text-3xl font-semibold tracking-tight uppercase text-white">
@@ -139,19 +157,22 @@ export default function About() {
       </section>
 
       {/* Corporate details */}
-      <section className="container-edge py-20 md:py-28">
+      <section className="container-edge py-16 md:py-24">
         <Reveal>
           <SectionLabel index={aboutContent.corporateDetails.eyebrowIndex} label={aboutContent.corporateDetails.eyebrowLabel} />
-          <h2 className="text-3xl md:text-4xl font-semibold tracking-tight uppercase max-w-2xl">
-            {aboutContent.corporateDetails.heading}
-          </h2>
+          <AnimatedText
+              as="h2"
+              lines={[aboutContent.corporateDetails.heading]}
+              wordDelay={38}
+              className="text-3xl md:text-4xl text-balance font-semibold tracking-tight uppercase max-w-2xl"
+            />
         </Reveal>
 
         <div className="mt-12 grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-8 max-w-4xl">
           <InfoRow label="Legal Name" value={company.legalName} />
           <InfoRow label="Ownership" value={company.ownership} />
           <InfoRow
-            label="Partners"
+            label={company.partners.length > 1 ? "Partners" : "Partner"}
             value={company.partners.map((p) => `${p.name} (${p.role})`).join(", ")}
           />
           <InfoRow label="Registered / Operational Address" value={company.registeredAddress} />

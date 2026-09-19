@@ -1,14 +1,26 @@
 import { useMemo, useState } from "react";
+import { Link } from "react-router-dom";
 import PageHero from "../components/PageHero";
 import SectionLabel from "../components/SectionLabel";
 import TechTag from "../components/TechTag";
 import Reveal from "../components/Reveal";
 import ProjectExplorer from "../components/ProjectExplorer";
+import Seo from "../components/Seo";
+import { slugify } from "../data/seoRoutes";
 import { useContent } from "../lib/content";
+import AnimatedText from "../components/AnimatedText";
 
 type Project = ReturnType<typeof useContent>["projects"][number];
 
 const projectImages: Record<string, string[]> = {
+  "adani-shakkar-pench": [
+    "/images/gallery/kalisindh-trench.jpg",
+    "/images/gallery/kalisindh-aerial.jpg",
+  ],
+  "scc-mahi-bajaj-sagar-earthwork": [
+    "/images/gallery/sauni-earthwork.jpg",
+    "/images/gallery/isp-kalisindh-earthwork.jpg",
+  ],
   "isp-kalisindh": [
     "/images/gallery/kalisindh-aerial.jpg",
     "/images/gallery/kalisindh-trench.jpg",
@@ -31,22 +43,57 @@ export default function Projects() {
     return projects.filter((p) => p.categories.includes(filter as never));
   }, [filter, projects]);
 
+  const stateLinks = useMemo(() => {
+    const seen = new Map<string, string>();
+    for (const p of projects) {
+      const parts = p.location.split(",").map((s) => s.trim());
+      const name = parts[parts.length - 1];
+      const key = name.toLowerCase();
+      if (!name || key === "india" || seen.has(key)) continue;
+      seen.set(key, name);
+    }
+    return Array.from(seen.values()).map((name) => ({ name, slug: slugify(name) }));
+  }, [projects]);
+
+  const projectsJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    itemListElement: projects.map((p, i) => ({
+      "@type": "ListItem",
+      position: i + 1,
+      name: p.title,
+      item: {
+        "@type": "CreativeWork",
+        name: p.title,
+        locationCreated: p.location,
+      },
+    })),
+  };
+
   return (
     <>
+      <Seo
+        path="/projects"
+        breadcrumbs={[{ name: "Home", path: "/" }, { name: "Projects", path: "/projects" }]}
+        jsonLd={projectsJsonLd}
+      />
       <PageHero index="03" eyebrow={pageHeroes.projects.eyebrow} title={pageHeroes.projects.title} intro={pageHeroes.projects.intro} />
 
       {/* Concurrent commitments */}
       <section className="container-edge py-16 md:py-24">
         <Reveal>
           <SectionLabel index={projectsContent.concurrent.eyebrowIndex} label={projectsContent.concurrent.eyebrowLabel} />
-          <h2 className="text-3xl md:text-4xl font-semibold tracking-tight uppercase max-w-2xl">
-            {projectsContent.concurrent.heading}
-          </h2>
+          <AnimatedText
+              as="h2"
+              lines={[projectsContent.concurrent.heading]}
+              wordDelay={38}
+              className="text-3xl md:text-4xl text-balance font-semibold tracking-tight uppercase max-w-2xl"
+            />
         </Reveal>
 
         <div className="mt-12 grid grid-cols-1 md:grid-cols-2 gap-px bg-concrete border border-concrete">
           {concurrentCommitments.map((c, i) => (
-            <Reveal key={c.title} delay={i * 130} className="bg-paper p-8">
+            <Reveal key={c.title} delay={i * 130} variant={i % 2 === 0 ? "left" : "right"} className="card-lift bg-paper p-8 border border-transparent hover:border-concrete">
               <p className="text-5xl md:text-6xl font-semibold tracking-tight text-rust">
                 {c.diameter}
               </p>
@@ -75,7 +122,7 @@ export default function Projects() {
             <TechTag dark className="mb-6">
               Project Explorer
             </TechTag>
-            <h2 className="text-editorial-display font-semibold uppercase tracking-tight leading-[0.98] text-white max-w-2xl whitespace-pre-line">
+            <h2 className="text-editorial-display measure-display font-semibold uppercase tracking-tight leading-[0.98] text-white whitespace-pre-line">
               {"Every project,\nin detail."}
             </h2>
           </Reveal>
@@ -91,9 +138,12 @@ export default function Projects() {
           <Reveal>
             <SectionLabel index={projectsContent.archive.eyebrowIndex} label={projectsContent.archive.eyebrowLabel} />
             <div className="flex flex-wrap items-end justify-between gap-6">
-              <h2 className="text-3xl md:text-4xl font-semibold tracking-tight uppercase max-w-xl">
-                {projectsContent.archive.heading}
-              </h2>
+              <AnimatedText
+              as="h2"
+              lines={[projectsContent.archive.heading]}
+              wordDelay={38}
+              className="text-3xl md:text-4xl text-balance font-semibold tracking-tight uppercase max-w-xl"
+            />
               <div className="flex flex-wrap gap-2">
                 {projectFilters.map((f) => (
                   <button
@@ -113,11 +163,11 @@ export default function Projects() {
           </Reveal>
 
           <div className="mt-10 border-t border-charcoal/15">
-            <div className="hidden md:grid grid-cols-12 gap-4 py-3 label-eyebrow text-steel border-b border-charcoal/15">
-              <span className="col-span-1">Year</span>
-              <span className="col-span-5">Project</span>
-              <span className="col-span-3">Location</span>
-              <span className="col-span-1">Client</span>
+            <div className="hidden lg:grid grid-cols-12 gap-4 py-3 label-eyebrow text-steel border-b border-charcoal/15">
+              <span className="col-span-2">Year</span>
+              <span className="col-span-4">Project</span>
+              <span className="col-span-2">Location</span>
+              <span className="col-span-2">Client</span>
               <span className="col-span-2 text-right">Value</span>
             </div>
             {filtered.map((p, i) => (
@@ -128,12 +178,12 @@ export default function Projects() {
                 onClick={() => setSelected(p)}
                 className="block w-full text-left"
               >
-                <div className="w-full text-left grid grid-cols-2 md:grid-cols-12 gap-2 md:gap-4 py-5 border-b border-charcoal/15 items-center hover:bg-paper hover:pl-2 transition-all duration-300">
-                  <span className="label-eyebrow text-rust md:col-span-1">{p.year}</span>
-                  <span className="col-span-2 md:col-span-5 font-medium">{p.title}</span>
-                  <span className="text-sm text-steel md:col-span-3">{p.location}</span>
-                  <span className="text-sm text-steel md:col-span-1">{p.client}</span>
-                  <span className="text-sm font-mono md:col-span-2 md:text-right">₹{p.workDoneCr} Cr</span>
+                <div className="w-full text-left grid grid-cols-2 lg:grid-cols-12 gap-2 lg:gap-4 py-5 border-b border-charcoal/15 items-center hover:bg-paper hover:pl-2 transition-all duration-300">
+                  <span className="label-eyebrow text-rust whitespace-nowrap lg:col-span-2">{p.year}</span>
+                  <span className="col-span-2 lg:col-span-4 font-medium">{p.title}</span>
+                  <span className="text-sm text-steel lg:col-span-2">{p.location}</span>
+                  <span className="text-sm text-steel lg:col-span-2">{p.client}</span>
+                  <span className="text-sm font-mono whitespace-nowrap lg:col-span-2 lg:text-right">₹{p.workDoneCr} Cr</span>
                 </div>
               </Reveal>
             ))}
@@ -143,6 +193,30 @@ export default function Projects() {
           </div>
         </div>
       </section>
+
+      {/* Cross-links to the location hub pages, generated from the same project records above */}
+      {stateLinks.length > 0 && (
+        <section className="container-edge py-12 md:py-16 border-t border-concrete">
+          <p className="label-eyebrow text-steel mb-4">Explore work by region</p>
+          <div className="flex flex-wrap gap-3">
+            <Link
+              to="/locations"
+              className="label-eyebrow px-4 py-2 border border-concrete hover:border-charcoal hover:text-charcoal text-steel transition-all duration-300"
+            >
+              All Locations
+            </Link>
+            {stateLinks.map((s) => (
+              <Link
+                key={s.slug}
+                to={`/locations/${s.slug}`}
+                className="label-eyebrow px-4 py-2 border border-concrete hover:border-charcoal hover:text-charcoal text-steel transition-all duration-300"
+              >
+                {s.name}
+              </Link>
+            ))}
+          </div>
+        </section>
+      )}
 
       {selected && (
         <ProjectDetail project={selected} onClose={() => setSelected(null)} />
@@ -210,6 +284,8 @@ function ProjectDetail({ project, onClose }: { project: Project; onClose: () => 
                   key={img}
                   src={img}
                   alt={project.title}
+                  width={img === images[0] ? 1600 : 800}
+                  height={img === images[0] ? 900 : 800}
                   className={`w-full object-cover ${img === images[0] ? "col-span-2 aspect-[16/9]" : "aspect-square"}`}
                   loading="lazy"
                   decoding="async"

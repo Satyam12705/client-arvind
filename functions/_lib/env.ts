@@ -1,8 +1,11 @@
 export interface Env {
   DB: D1Database;
-  MEDIA: R2Bucket;
   ADMIN_PASSWORD: string;
   SESSION_SECRET: string;
+  CLOUDINARY_CLOUD_NAME: string;
+  CLOUDINARY_API_KEY: string;
+  CLOUDINARY_API_SECRET: string;
+  RESEND_API_KEY: string;
 }
 
 export function json(data: unknown, init: ResponseInit = {}): Response {

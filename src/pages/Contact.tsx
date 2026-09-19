@@ -3,8 +3,10 @@ import PageHero from "../components/PageHero";
 import SectionLabel from "../components/SectionLabel";
 import Reveal from "../components/Reveal";
 import MagneticButton from "../components/MagneticButton";
+import Seo from "../components/Seo";
 import { useContent } from "../lib/content";
-import { buildEnquiryMessage, mailLink, telLink, whatsappLink } from "../lib/whatsapp";
+import { mailLink, telLink, whatsappLink } from "../lib/whatsapp";
+import AnimatedText from "../components/AnimatedText";
 
 interface FormState {
   name: string;
@@ -13,8 +15,8 @@ interface FormState {
   email: string;
   location: string;
   service: string;
+  serviceOther: string;
   requirement: string;
-  fileName: string;
 }
 
 const initialState: FormState = {
@@ -24,37 +26,53 @@ const initialState: FormState = {
   email: "",
   location: "",
   service: "",
+  serviceOther: "",
   requirement: "",
-  fileName: "",
 };
+
+type SubmitStatus = "idle" | "submitting" | "success" | "error";
 
 export default function Contact() {
   const { company, specializations, pageHeroes, contactContent } = useContent();
   const [form, setForm] = useState<FormState>(initialState);
-  const [submitted, setSubmitted] = useState(false);
+  const [status, setStatus] = useState<SubmitStatus>("idle");
 
   const set = (key: keyof FormState) => (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
   ) => setForm((f) => ({ ...f, [key]: e.target.value }));
 
-  const onSubmit = (e: FormEvent) => {
+  const onSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    setSubmitted(true);
+    setStatus("submitting");
+    try {
+      const payload = {
+        ...form,
+        service: form.service === "Other" && form.serviceOther.trim() ? form.serviceOther.trim() : form.service,
+      };
+      const res = await fetch("/api/enquiry", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+      if (!res.ok) throw new Error(`Request failed with ${res.status}`);
+      setStatus("success");
+    } catch {
+      setStatus("error");
+    }
   };
-
-  const message = buildEnquiryMessage(form);
 
   return (
     <>
+      <Seo path="/contact" breadcrumbs={[{ name: "Home", path: "/" }, { name: "Contact", path: "/contact" }]} />
       <PageHero index="08" eyebrow={pageHeroes.contact.eyebrow} title={pageHeroes.contact.title} intro={pageHeroes.contact.intro} />
 
       {/* Quick contact */}
       <section className="container-edge py-16 md:py-20">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-px bg-concrete border border-concrete">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-px bg-concrete border border-concrete">
           <Reveal
             as="a"
             href={telLink(company.phones[0])}
-            className="block bg-paper p-8 hover:bg-ivory hover:-translate-y-0.5 transition-all duration-300 group"
+            className="card-lift block bg-paper p-8 hover:bg-ivory group"
           >
             <p className="label-eyebrow text-rust">Call</p>
             <p className="mt-3 text-lg font-medium group-hover:text-rust transition-colors">+91 {company.phones[0]}</p>
@@ -64,7 +82,7 @@ export default function Contact() {
             as="a"
             delay={100}
             href={mailLink(company.emails[0])}
-            className="block bg-paper p-8 hover:bg-ivory hover:-translate-y-0.5 transition-all duration-300 group"
+            className="card-lift block bg-paper p-8 hover:bg-ivory group"
           >
             <p className="label-eyebrow text-rust">Email</p>
             <p className="mt-3 text-lg font-medium group-hover:text-rust transition-colors break-all">{company.emails[0]}</p>
@@ -75,7 +93,7 @@ export default function Contact() {
             href={whatsappLink(contactContent.whatsappDefaultMessage, company.whatsappNumber)}
             target="_blank"
             rel="noreferrer"
-            className="block bg-paper p-8 hover:bg-ivory hover:-translate-y-0.5 transition-all duration-300 group"
+            className="card-lift block bg-paper p-8 hover:bg-ivory group"
           >
             <p className="label-eyebrow text-rust">WhatsApp</p>
             <p className="mt-3 text-lg font-medium group-hover:text-rust transition-colors">Start a chat</p>
@@ -89,11 +107,14 @@ export default function Contact() {
         <div className="container-edge py-16 md:py-24 grid grid-cols-1 lg:grid-cols-12 gap-12">
           <Reveal className="lg:col-span-7">
             <SectionLabel index={contactContent.enquiry.eyebrowIndex} label={contactContent.enquiry.eyebrowLabel} />
-            <h2 className="text-3xl md:text-4xl font-semibold tracking-tight uppercase max-w-lg">
-              {contactContent.enquiry.heading}
-            </h2>
+            <AnimatedText
+              as="h2"
+              lines={[contactContent.enquiry.heading]}
+              wordDelay={38}
+              className="text-3xl md:text-4xl text-balance font-semibold tracking-tight uppercase max-w-lg"
+            />
 
-            {!submitted ? (
+            {status !== "success" ? (
               <form onSubmit={onSubmit} className="mt-10 space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <Field label="Full Name" required>
@@ -119,8 +140,19 @@ export default function Contact() {
                           {s.title}
                         </option>
                       ))}
+                      <option value="Other">Other</option>
                     </select>
                   </Field>
+                  {form.service === "Other" && (
+                    <Field label="Please Specify">
+                      <input
+                        value={form.serviceOther}
+                        onChange={set("serviceOther")}
+                        className="input"
+                        placeholder="Tell us what service you need"
+                      />
+                    </Field>
+                  )}
                 </div>
 
                 <Field label="Project Requirement" required>
@@ -134,72 +166,57 @@ export default function Contact() {
                   />
                 </Field>
 
-                <Field label="Upload BOQ / Requirement (optional)">
-                  <label className="flex items-center justify-between border border-concrete bg-paper px-4 py-3 cursor-pointer hover:border-charcoal transition-colors">
-                    <span className="text-sm text-steel truncate">
-                      {form.fileName || "Choose a file (PDF, DOC, XLS)"}
-                    </span>
-                    <span className="label-eyebrow text-rust shrink-0 ml-3">Browse</span>
-                    <input
-                      type="file"
-                      className="hidden"
-                      onChange={(e) => setForm((f) => ({ ...f, fileName: e.target.files?.[0]?.name ?? "" }))}
-                    />
-                  </label>
-                </Field>
+                {status === "error" && (
+                  <p className="text-sm text-rust leading-relaxed" role="alert">
+                    Something went wrong sending your enquiry. Please try again, or reach us
+                    directly by phone, email or WhatsApp above.
+                  </p>
+                )}
 
                 <MagneticButton className="w-full md:w-auto">
                   <button
                     type="submit"
-                    className="group w-full md:w-auto inline-flex items-center justify-center gap-2.5 bg-charcoal text-paper px-8 py-4 label-eyebrow hover:bg-rust hover:shadow-[0_6px_24px_rgba(184,83,31,0.35)] transition-all duration-300"
+                    disabled={status === "submitting"}
+                    className="group w-full md:w-auto inline-flex items-center justify-center gap-2.5 bg-charcoal text-paper px-8 py-4 label-eyebrow hover:bg-rust hover:shadow-[0_6px_24px_rgba(184,83,31,0.35)] transition-all duration-300 disabled:opacity-60 disabled:pointer-events-none"
                   >
-                    Send Project Enquiry
+                    {status === "submitting" ? "Sending…" : "Send Project Enquiry"}
                     <ArrowIcon className="transition-transform duration-300 group-hover:translate-x-1" />
                   </button>
                 </MagneticButton>
               </form>
             ) : (
               <div className="mt-10 border border-rust/40 bg-paper p-8 animate-fade-up">
-                <p className="label-eyebrow text-rust">Enquiry Ready</p>
+                <p className="label-eyebrow text-rust">Enquiry Sent</p>
                 <p className="mt-3 text-lg font-medium">
-                  Thank you. Your enquiry details are ready to be shared with Anand Techno-Fab.
+                  Thank you. Your enquiry has been sent to our team.
                 </p>
                 <p className="mt-2 text-sm text-steel leading-relaxed">
-                  This form does not connect to a live inbox in this preview. Use the button
-                  below to send your details directly to us over WhatsApp, or reach us by
-                  phone or email above.
+                  We'll get back to you shortly. In the meantime, feel free to reach us directly
+                  by phone or WhatsApp above.
                 </p>
-                <div className="mt-6 flex flex-wrap gap-4">
-                  <a
-                    href={whatsappLink(message, company.whatsappNumber)}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="inline-flex items-center gap-2 bg-rust text-white px-6 py-3 label-eyebrow hover:bg-rust-dark transition-colors"
-                  >
-                    Send via WhatsApp
-                  </a>
+                <div className="mt-6">
                   <button
                     onClick={() => {
-                      setSubmitted(false);
+                      setStatus("idle");
                       setForm(initialState);
                     }}
                     className="border border-charcoal/30 px-6 py-3 label-eyebrow hover:border-charcoal transition-colors"
                   >
-                    Start Over
+                    Send Another Enquiry
                   </button>
                 </div>
-                <pre className="mt-6 whitespace-pre-wrap text-xs text-steel bg-ivory border border-concrete p-4 font-mono">
-{message}
-                </pre>
               </div>
             )}
           </Reveal>
 
           <Reveal delay={150} className="lg:col-span-5">
             <SectionLabel index={contactContent.office.eyebrowIndex} label={contactContent.office.eyebrowLabel} />
-            <h2 className="text-3xl md:text-4xl font-semibold tracking-tight uppercase max-w-lg">
-              {contactContent.office.heading}
-            </h2>
+            <AnimatedText
+              as="h2"
+              lines={[contactContent.office.heading]}
+              wordDelay={38}
+              className="text-3xl md:text-4xl text-balance font-semibold tracking-tight uppercase max-w-lg"
+            />
             <p className="mt-6 text-charcoal/80 leading-relaxed">{company.registeredAddress}</p>
 
             <div className="mt-8 space-y-4 border-t border-concrete pt-6">

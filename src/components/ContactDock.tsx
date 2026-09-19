@@ -1,6 +1,5 @@
 import { whatsappLink, telLink } from "../lib/whatsapp";
 import { useContent } from "../lib/content";
-import MagneticButton from "./MagneticButton";
 
 export default function ContactDock() {
   const { company, contactContent } = useContent();
@@ -10,23 +9,21 @@ export default function ContactDock() {
     <>
       {/* Desktop floating WhatsApp control — right wall, vertically centered */}
       <div className="hidden md:block fixed right-0 top-1/2 -translate-y-1/2 z-40">
-        <MagneticButton maxOffset={10}>
-          <a
-            href={waLink}
-            target="_blank"
-            rel="noreferrer"
-            aria-label="Chat on WhatsApp"
-            className="group relative flex items-center justify-center w-16 h-16 rounded-l-2xl bg-[#25D366] text-white shadow-[0_8px_28px_rgba(37,211,102,0.4)] hover:w-[13.5rem] hover:rounded-l-2xl transition-all duration-300 ease-out overflow-hidden"
-          >
-            <span className="absolute inset-0 rounded-l-2xl bg-[#25D366] animate-wa-pulse" />
-            <span className="relative flex items-center gap-3 pl-1">
-              <WhatsAppIcon className="w-7 h-7 shrink-0" />
-              <span className="label-eyebrow whitespace-nowrap max-w-0 opacity-0 group-hover:max-w-[9rem] group-hover:opacity-100 transition-all duration-300">
-                WhatsApp Us
-              </span>
+        <a
+          href={waLink}
+          target="_blank"
+          rel="noreferrer"
+          aria-label="Chat on WhatsApp"
+          className="group relative flex items-center justify-center w-16 h-16 rounded-l-2xl bg-[#25D366] text-white shadow-[0_8px_28px_rgba(37,211,102,0.4)] hover:w-[13.5rem] hover:rounded-l-2xl transition-all duration-300 ease-out overflow-hidden"
+        >
+          <span className="absolute inset-0 rounded-l-2xl bg-[#25D366] animate-wa-pulse" />
+          <span className="relative flex items-center gap-3 pl-1">
+            <WhatsAppIcon className="w-7 h-7 shrink-0" />
+            <span className="label-eyebrow whitespace-nowrap max-w-0 opacity-0 group-hover:max-w-[9rem] group-hover:opacity-100 transition-all duration-300">
+              WhatsApp Us
             </span>
-          </a>
-        </MagneticButton>
+          </span>
+        </a>
       </div>
 
       {/* Mobile sticky action bar */}

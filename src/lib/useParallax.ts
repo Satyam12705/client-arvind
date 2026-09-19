@@ -14,6 +14,10 @@ export function useParallax<T extends HTMLElement>(strength = 0.15, maxOffset = 
     const el = ref.current;
     if (!el) return;
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    // Coarse pointer == touch. Mobile browsers drive scroll off the compositor
+    // thread, so a scroll-linked transform lands a frame late and reads as
+    // judder; the static background looks better than a stuttering one.
+    if (window.matchMedia("(pointer: coarse)").matches) return;
 
     const update = () => {
       raf.current = null;
