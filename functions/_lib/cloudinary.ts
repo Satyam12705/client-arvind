@@ -83,3 +83,67 @@ export async function deleteFromCloudinary(env: Env, publicId: string, resourceT
     throw new Error(`Cloudinary delete failed (${res.status}): ${detail}`);
   }
 }
+
+export interface CloudinaryResource {
+  publicId: string;
+  resourceType: string;
+  url: string;
+  bytes: number;
+  createdAt: string;
+}
+
+/**
+ * Lists everything actually stored in the account's folder, via Cloudinary's
+ * Admin API (Basic auth with the API key/secret rather than a signed upload
+ * form).
+ *
+ * The `media` table only knows about files uploaded through this admin panel.
+ * Anything uploaded before it existed, or through the Cloudinary dashboard,
+ * is invisible to the panel and can never be cleaned up from here — which
+ * matters because nobody on this project has Cloudinary dashboard access.
+ * This is what lets the panel show, and remove, those strays too.
+ */
+export async function listCloudinaryResources(env: Env): Promise<CloudinaryResource[]> {
+  const auth = btoa(`${env.CLOUDINARY_API_KEY}:${env.CLOUDINARY_API_SECRET}`);
+  const out: CloudinaryResource[] = [];
+
+  // Images and videos are separate resource types and must be paged separately.
+  for (const type of ["image", "video"] as const) {
+    let cursor: string | undefined;
+    do {
+      const qs = new URLSearchParams({
+        type: "upload",
+        prefix: "anand-techno-fab",
+        max_results: "100",
+      });
+      if (cursor) qs.set("next_cursor", cursor);
+
+      const res = await fetch(
+        `https://api.cloudinary.com/v1_1/${env.CLOUDINARY_CLOUD_NAME}/resources/${type}?${qs}`,
+        { headers: { Authorization: `Basic ${auth}` } }
+      );
+      if (!res.ok) {
+        // A missing resource type (e.g. no videos yet) must not fail the listing.
+        if (res.status === 404) break;
+        const detail = await res.text().catch(() => "");
+        throw new Error(`Cloudinary list failed (${res.status}): ${detail}`);
+      }
+      const data = (await res.json()) as {
+        resources?: { public_id: string; resource_type: string; secure_url: string; bytes: number; created_at: string }[];
+        next_cursor?: string;
+      };
+      for (const r of data.resources ?? []) {
+        out.push({
+          publicId: r.public_id,
+          resourceType: r.resource_type,
+          url: r.secure_url,
+          bytes: r.bytes,
+          createdAt: r.created_at,
+        });
+      }
+      cursor = data.next_cursor;
+    } while (cursor);
+  }
+
+  return out;
+}
