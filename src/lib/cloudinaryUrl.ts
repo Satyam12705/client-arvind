@@ -66,10 +66,16 @@ export function optimizedImage(url: string, width = 1600): string {
  * updated, the poster was not, and the hero kept showing the previous footage
  * to anyone with reduced motion enabled.
  *
+ * Frame 0 by default, not a second in: the still is what the visitor looks at
+ * until playback begins, so taking it from any later point means the picture
+ * visibly jumps the moment the video starts. At frame 0 the handoff is between
+ * two identical images and cannot be seen. (Checked against this video first —
+ * a clip that fades in from black would want a later frame instead.)
+ *
  * Returns null for anything that is not a Cloudinary video, so the caller can
  * fall back to the configured poster.
  */
-export function videoPosterFrame(videoUrl: string, atSeconds = 1): string | null {
+export function videoPosterFrame(videoUrl: string, atSeconds = 0): string | null {
   if (typeof videoUrl !== "string" || !videoUrl.includes(CLOUDINARY_HOST)) return null;
   if (!videoUrl.includes("/video/upload/")) return null;
 
