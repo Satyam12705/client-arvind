@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { optimizedImage, optimizedVideo } from "../lib/cloudinaryUrl";
+import { optimizedImage, optimizedVideo, videoPosterFrame } from "../lib/cloudinaryUrl";
 
 /**
  * Autoplaying muted background video, cross-faded in over its poster.
@@ -33,7 +33,12 @@ export default function VideoHero({
   // editor uploaded, and a 25 MB file leaves the poster on screen for the
   // twenty-odd seconds it takes to download.
   const videoSrc = optimizedVideo(src);
-  const posterSrc = optimizedImage(poster, 1920);
+  // Prefer a frame of the video itself over the separately uploaded poster.
+  // The two drift apart as soon as someone replaces the video without also
+  // replacing the poster, and the still is standing in for the video, so it
+  // should show the video's content. Falls back to the configured poster for
+  // a non-Cloudinary video.
+  const posterSrc = videoPosterFrame(src) ?? optimizedImage(poster, 1920);
   const [reduceMotion, setReduceMotion] = useState(false);
   const [showVideo, setShowVideo] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);

@@ -54,3 +54,27 @@ export function optimizedVideo(url: string): string {
 export function optimizedImage(url: string, width = 1600): string {
   return withTransform(url, `q_auto,f_auto,c_limit,w_${width}`);
 }
+
+
+/**
+ * A still frame taken from a Cloudinary video.
+ *
+ * Under prefers-reduced-motion the hero shows a still *instead of* the video,
+ * so that still should be the video's own content. Using the separately
+ * uploaded poster means the two drift apart the moment someone replaces the
+ * video and forgets the poster — which is exactly what happened: the video was
+ * updated, the poster was not, and the hero kept showing the previous footage
+ * to anyone with reduced motion enabled.
+ *
+ * Returns null for anything that is not a Cloudinary video, so the caller can
+ * fall back to the configured poster.
+ */
+export function videoPosterFrame(videoUrl: string, atSeconds = 1): string | null {
+  if (typeof videoUrl !== "string" || !videoUrl.includes(CLOUDINARY_HOST)) return null;
+  if (!videoUrl.includes("/video/upload/")) return null;
+
+  const withFrame = withTransform(videoUrl, `so_${atSeconds},q_auto,f_auto,c_limit,w_1920`);
+  // Asking for an image extension is what makes Cloudinary render a frame
+  // rather than serve the clip.
+  return withFrame.replace(/\.(mp4|webm|mov|m4v|avi)(\?.*)?$/i, ".jpg$2");
+}
