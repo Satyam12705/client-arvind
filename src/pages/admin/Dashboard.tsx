@@ -101,6 +101,9 @@ export default function AdminDashboard() {
   const [status, setStatus] = useState<"idle" | "saving" | "saved" | "error">("idle");
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [cleaned, setCleaned] = useState<{ url: string; filename: string }[]>([]);
+  // The section list is a permanent column on desktop and a drawer on phones,
+  // where a fixed 288px sidebar left barely 100px for the form itself.
+  const [navOpen, setNavOpen] = useState(false);
 
   useEffect(() => {
     setDraft(content[activeKey as keyof typeof content] as JsonValue);
@@ -137,8 +140,23 @@ export default function AdminDashboard() {
   };
 
   return (
-    <div className="min-h-screen bg-neutral-950 text-neutral-100 flex">
-      <aside className="w-72 shrink-0 border-r border-neutral-800 h-screen sticky top-0 overflow-y-auto">
+    <div className="min-h-screen bg-neutral-950 text-neutral-100 lg:flex">
+      {/* Scrim: only rendered while the drawer is open, and only on small screens. */}
+      {navOpen && (
+        <button
+          type="button"
+          aria-label="Close menu"
+          onClick={() => setNavOpen(false)}
+          className="lg:hidden fixed inset-0 z-40 bg-black/60"
+        />
+      )}
+
+      <aside
+        className={`w-72 shrink-0 border-r border-neutral-800 bg-neutral-950 overflow-y-auto
+          fixed inset-y-0 left-0 z-50 transition-transform duration-300 ease-out
+          ${navOpen ? "translate-x-0" : "-translate-x-full"}
+          lg:static lg:translate-x-0 lg:h-screen lg:sticky lg:top-0 lg:z-auto`}
+      >
         <div className="p-5 border-b border-neutral-800">
           <p className="text-xs font-mono uppercase tracking-widest text-rust-light">Anand Techno-Fab</p>
           <p className="text-sm text-neutral-400 mt-0.5">Admin Panel</p>
@@ -150,7 +168,10 @@ export default function AdminDashboard() {
               {group.keys.map(({ key, label }) => (
                 <button
                   key={String(key)}
-                  onClick={() => setActiveKey(String(key))}
+                  onClick={() => {
+                    setActiveKey(String(key));
+                    setNavOpen(false);
+                  }}
                   className={`w-full text-left px-2.5 py-2 rounded text-sm transition-colors ${
                     activeKey === key ? "bg-rust text-white" : "text-neutral-300 hover:bg-neutral-900"
                   }`}
@@ -163,10 +184,22 @@ export default function AdminDashboard() {
         </nav>
       </aside>
 
-      <main className="flex-1 min-w-0">
-        <header className="sticky top-0 z-10 bg-neutral-950/95 backdrop-blur border-b border-neutral-800 px-6 py-4 flex items-center justify-between">
-          <div>
-            <p className="text-sm font-medium text-neutral-100">{activeLabel}</p>
+      <main className="flex-1 min-w-0 lg:min-h-screen">
+        <header className="sticky top-0 z-30 bg-neutral-950/95 backdrop-blur border-b border-neutral-800 px-4 sm:px-6 py-3 sm:py-4 flex items-center justify-between gap-3">
+          <div className="flex items-center gap-3 min-w-0">
+            <button
+              type="button"
+              onClick={() => setNavOpen(true)}
+              aria-label="Open section menu"
+              aria-expanded={navOpen}
+              className="lg:hidden shrink-0 p-2 border border-neutral-700 rounded text-neutral-300"
+            >
+              <svg width="18" height="18" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                <path d="M2 5h16M2 10h16M2 15h16" stroke="currentColor" strokeWidth="1.6" />
+              </svg>
+            </button>
+            <div className="min-w-0">
+              <p className="text-sm font-medium text-neutral-100 truncate">{activeLabel}</p>
             {dirty && <p className="text-xs text-amber-400">Unsaved changes</p>}
             {status === "saved" && (
               <p className="text-xs text-emerald-400">
@@ -178,30 +211,34 @@ export default function AdminDashboard() {
               </p>
             )}
             {status === "error" && <p className="text-xs text-red-400">{errorMsg}</p>}
+            </div>
           </div>
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 sm:gap-3 shrink-0">
             <a
               href="/"
               target="_blank"
               rel="noreferrer"
-              className="text-xs px-3 py-2 border border-neutral-700 rounded text-neutral-300 hover:border-neutral-500"
+              className="hidden sm:inline-block text-xs px-3 py-2 border border-neutral-700 rounded text-neutral-300 hover:border-neutral-500"
             >
               View Site
             </a>
             <button
               onClick={onSave}
               disabled={!dirty || status === "saving"}
-              className="text-xs px-4 py-2 bg-rust hover:bg-rust-dark text-white rounded disabled:opacity-40"
+              className="text-xs px-3 sm:px-4 py-2 bg-rust hover:bg-rust-dark text-white rounded disabled:opacity-40 whitespace-nowrap"
             >
-              {status === "saving" ? "Saving…" : "Save Changes"}
+              {status === "saving" ? "Saving…" : "Save"}
             </button>
-            <button onClick={onLogout} className="text-xs px-3 py-2 text-neutral-400 hover:text-neutral-100">
+            <button
+              onClick={onLogout}
+              className="text-xs px-2 sm:px-3 py-2 text-neutral-400 hover:text-neutral-100 whitespace-nowrap"
+            >
               Log Out
             </button>
           </div>
         </header>
 
-        <div className="p-6 max-w-3xl">
+        <div className="p-4 sm:p-6 max-w-3xl">
           <GuidePanel activeKey={activeKey} label={activeLabel} />
           <SectionEditor value={draft} onChange={(v) => { setDraft(v); setDirty(true); }} />
         </div>
