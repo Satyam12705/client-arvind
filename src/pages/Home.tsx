@@ -10,7 +10,7 @@ import ProjectExplorer from "../components/ProjectExplorer";
 import ClientMarquee from "../components/ClientMarquee";
 import Carousel from "../components/Carousel";
 import Seo from "../components/Seo";
-import { useContent } from "../lib/content";
+import { useContent, useContentReady } from "../lib/content";
 import { whatsappLink } from "../lib/whatsapp";
 import { useParallax } from "../lib/useParallax";
 import SafeImage from "../components/SafeImage";
@@ -62,6 +62,13 @@ export default function Home() {
     clients,
   } = useContent();
   const heroBgRef = useParallax<HTMLDivElement>(0.06, 36);
+  // The hero media is not painted until the real settings have arrived. The
+  // bundled defaults exist only so the page still works if /api/content fails;
+  // painting them first meant every visit briefly showed whatever video shipped
+  // in the repo before swapping to the configured one — seconds of it on a
+  // phone. The hero is dark either way, so the wait reads as the section
+  // loading rather than as the wrong clip playing.
+  const contentReady = useContentReady();
   const featuredProjects = projects.slice(0, 5);
   const { sections } = home;
   const [heroStat, ...supportingStats] = home.stats;
@@ -74,12 +81,14 @@ export default function Home() {
           viewport width — the section grows to fit its content instead. */}
       <section className="relative min-h-[94vh] md:min-h-screen flex items-end overflow-hidden bg-charcoal">
         <div ref={heroBgRef} className="absolute left-0 right-0 layer-isolate" style={{ top: "-6%", bottom: "-6%" }}>
-          <VideoHero
-            src={siteSettings.heroVideo}
-            poster={siteSettings.heroPoster}
-            alt={siteSettings.heroVideoAlt}
-            className="w-full h-full object-cover"
-          />
+          {contentReady && (
+            <VideoHero
+              src={siteSettings.heroVideo}
+              poster={siteSettings.heroPoster}
+              alt={siteSettings.heroVideoAlt}
+              className="w-full h-full object-cover"
+            />
+          )}
         </div>
         {/* Scrims are deliberately light and short. The previous pair ended on
             `from-charcoal` (alpha 1.0) at the bottom and stacked a second wash
