@@ -23,13 +23,12 @@
       <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" />
     </noscript>
     <link rel="preload" as="image" href="/images/logo.png" />
-    <!-- The hero background video's poster is the page's LCP element, but its
-         URL only exists inside JS-rendered markup (this is a client-rendered
-         SPA) — the browser's preload scanner can't discover it from the raw
-         HTML otherwise, so it wouldn't start fetching until React mounts.
-         Matches siteSettings.heroPoster's default; harmless if an admin ever
-         changes that value, just loses this specific hint until updated here. -->
-    <link rel="preload" as="image" href="/images/gallery/kalisindh-trench.jpg" fetchpriority="high" />
+    <!-- No hero-image preload here on purpose. The hero poster is chosen from
+         the admin panel and now lives on Cloudinary, so a hard-coded preload
+         points at a file the page never renders — a high-priority fetch of an
+         unused image, competing with the one actually needed. If a preload is
+         wanted again it has to be emitted per-request from the saved setting,
+         not hard-coded. -->
     <!-- Critical inline style: paints the intro's charcoal backdrop before the JS
          bundle executes, so a first-time visitor never sees a flash of the paper
          background before the arrival animation takes over. Layout's own

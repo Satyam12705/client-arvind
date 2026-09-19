@@ -91,11 +91,20 @@ export default function Home() {
         <div className="absolute inset-0 bg-[linear-gradient(to_top,rgba(23,24,26,0.78)_0%,rgba(23,24,26,0.40)_22%,rgba(23,24,26,0.08)_50%,transparent_70%)]" />
         <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(23,24,26,0.45)_0%,rgba(23,24,26,0.10)_42%,transparent_62%)]" />
 
-        <div className="container-edge relative z-10 pb-10 md:pb-16 pt-24 layer-isolate">
-          <div className="animate-hero-in mb-5" style={{ animationDelay: "60ms" }}>
+        <div className="container-edge relative z-10 pb-8 sm:pb-10 md:pb-16 pt-20 sm:pt-24 layer-isolate">
+          {/* Decorative only ("ATF / 001 — ENGINEERING"), so it is the first
+              thing to go when vertical space is scarce. */}
+          <div className="hidden sm:block animate-hero-in mb-5" style={{ animationDelay: "60ms" }}>
             <TechTag dark onImage>{home.heroTechTag}</TechTag>
           </div>
-          <p className="on-media animate-hero-in label-eyebrow text-rust-light mb-3" style={{ animationDelay: "160ms" }}>
+          <p
+            // `!` is required: .label-eyebrow sets font-size and letter-spacing
+            // and is defined after Tailwind's utilities in index.css, so at equal
+            // specificity it wins on source order. Without it the eyebrow keeps
+            // its 0.14em tracking and wraps to two lines on a phone.
+            className="on-media animate-hero-in label-eyebrow text-rust-light mb-2 sm:mb-3 text-[0.6875rem]! sm:text-xs! tracking-[0.07em]! sm:tracking-[0.14em]!"
+            style={{ animationDelay: "160ms" }}
+          >
             {home.heroEyebrow}
           </p>
           <AnimatedText
@@ -104,19 +113,19 @@ export default function Home() {
             baseDelay={260}
             wordDelay={55}
             lines={[home.heroHeadlineLine1, home.heroHeadlineLine2]}
-            className="on-media text-white font-semibold uppercase leading-[0.98] tracking-tight text-cinema-display break-words"
+            className="on-media text-white font-semibold uppercase leading-[0.92] sm:leading-[0.98] tracking-tight text-cinema-display break-words"
           />
           <p
-            className="on-media animate-hero-in mt-5 max-w-lg text-ivory/85 text-sm md:text-base leading-relaxed"
+            className="on-media animate-hero-in mt-3 sm:mt-5 max-w-lg text-ivory/85 text-[0.8125rem] sm:text-sm md:text-base leading-snug sm:leading-relaxed"
             style={{ animationDelay: "480ms" }}
           >
             {home.heroIntro}
           </p>
-          <div className="animate-hero-in mt-7 flex flex-wrap gap-4" style={{ animationDelay: "600ms" }}>
+          <div className="animate-hero-in mt-5 sm:mt-7 flex flex-wrap gap-3 sm:gap-4" style={{ animationDelay: "600ms" }}>
             <MagneticButton>
               <Link
                 to={home.heroCtaPrimaryTo}
-                className="group inline-flex items-center gap-2.5 bg-rust text-white px-7 py-3.5 label-eyebrow hover:bg-rust-dark hover:shadow-[0_6px_24px_rgba(184,83,31,0.4)] transition-all duration-300"
+                className="group inline-flex items-center gap-2 sm:gap-2.5 bg-rust text-white px-4 sm:px-7 py-3 sm:py-3.5 label-eyebrow text-[0.65rem] sm:text-xs hover:bg-rust-dark hover:shadow-[0_6px_24px_rgba(184,83,31,0.4)] transition-all duration-300"
               >
                 {home.heroCtaPrimaryLabel}
                 <ArrowIcon className="transition-transform duration-300 group-hover:translate-x-1" />
@@ -125,7 +134,7 @@ export default function Home() {
             <MagneticButton>
               <Link
                 to={home.heroCtaSecondaryTo}
-                className="group inline-flex items-center gap-2.5 border border-ivory/40 text-white px-7 py-3.5 label-eyebrow hover:border-ivory hover:bg-white/5 transition-all duration-300"
+                className="group inline-flex items-center gap-2 sm:gap-2.5 border border-ivory/40 text-white px-4 sm:px-7 py-3 sm:py-3.5 label-eyebrow text-[0.65rem] sm:text-xs hover:border-ivory hover:bg-white/5 transition-all duration-300"
               >
                 {home.heroCtaSecondaryLabel}
                 <ArrowIcon className="transition-transform duration-300 group-hover:translate-x-1" />
