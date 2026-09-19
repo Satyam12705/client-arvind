@@ -868,8 +868,8 @@
   "financialNote": "Figures as declared in the company's financial track record. This section can be withdrawn from public view on request.",
   "siteSettings": {
     "logo": "/images/logo.png",
-    "heroVideo": "/videos/hero-placeholder.mp4",
-    "heroPoster": "/images/gallery/kalisindh-trench.jpg",
+    "heroVideo": "https://res.cloudinary.com/r7zlkx9n/video/upload/v1789838821/anand-techno-fab/h5wkz0ojykahxjkmnsz4.mp4",
+    "heroPoster": "https://res.cloudinary.com/r7zlkx9n/image/upload/v1789811022/anand-techno-fab/zlbartqc5xuf7rcdlqwr.png",
     "heroVideoAlt": "Anand Techno-Fab project sites — pipeline installation, earthwork and mining operations",
     "introEnabled": true,
     "motionEnabled": true,
