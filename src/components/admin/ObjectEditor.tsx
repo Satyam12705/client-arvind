@@ -1,4 +1,5 @@
 import MediaPicker from "./MediaPicker";
+import { FIELD_GUIDE } from "../../pages/admin/guide";
 
 export type JsonValue = string | number | boolean | null | JsonValue[] | { [key: string]: JsonValue };
 
@@ -55,7 +56,7 @@ function Field({
     if (MEDIA_IMAGE_RE.test(fieldKey)) {
       return (
         <div>
-          <FieldLabel>{label}</FieldLabel>
+          <FieldLabel hintKey={fieldKey}>{label}</FieldLabel>
           <MediaPicker value={value} onChange={onChange} kind="image" />
         </div>
       );
@@ -63,7 +64,7 @@ function Field({
     if (MEDIA_VIDEO_RE.test(fieldKey)) {
       return (
         <div>
-          <FieldLabel>{label}</FieldLabel>
+          <FieldLabel hintKey={fieldKey}>{label}</FieldLabel>
           <MediaPicker value={value} onChange={onChange} kind="video" />
         </div>
       );
@@ -71,7 +72,7 @@ function Field({
     const useTextarea = LONG_TEXT_RE.test(fieldKey) || value.length > 90;
     return (
       <div>
-        <FieldLabel>{label}</FieldLabel>
+        <FieldLabel hintKey={fieldKey}>{label}</FieldLabel>
         {useTextarea ? (
           <textarea
             value={value}
@@ -94,7 +95,7 @@ function Field({
   if (typeof value === "number") {
     return (
       <div>
-        <FieldLabel>{label}</FieldLabel>
+        <FieldLabel hintKey={fieldKey}>{label}</FieldLabel>
         <input
           type="number"
           value={value}
@@ -106,16 +107,23 @@ function Field({
   }
 
   if (typeof value === "boolean") {
+    // Checkboxes render their own label rather than going through FieldLabel,
+    // so the hint has to be repeated here — and these are the switches most
+    // worth explaining ("show" hides a whole section from visitors).
+    const hint = FIELD_GUIDE[fieldKey];
     return (
-      <label className="flex items-center gap-2.5 cursor-pointer">
-        <input
-          type="checkbox"
-          checked={value}
-          onChange={(e) => onChange(e.target.checked)}
-          className="w-4 h-4 accent-[color:var(--color-rust,#b8531f)]"
-        />
-        <span className="text-sm text-neutral-200">{label}</span>
-      </label>
+      <div>
+        <label className="flex items-center gap-2.5 cursor-pointer">
+          <input
+            type="checkbox"
+            checked={value}
+            onChange={(e) => onChange(e.target.checked)}
+            className="w-4 h-4 accent-[color:var(--color-rust,#b8531f)]"
+          />
+          <span className="text-sm text-neutral-200">{label}</span>
+        </label>
+        {hint && <p className="mt-1 ml-[1.625rem] text-[11px] text-neutral-500/90 leading-snug">{hint}</p>}
+      </div>
     );
   }
 
@@ -124,14 +132,14 @@ function Field({
     if (allStrings || value.length === 0) {
       return (
         <div>
-          <FieldLabel>{label}</FieldLabel>
+          <FieldLabel hintKey={fieldKey}>{label}</FieldLabel>
           <StringListEditor value={value as string[]} onChange={(v) => onChange(v)} />
         </div>
       );
     }
     return (
       <div>
-        <FieldLabel>{label}</FieldLabel>
+        <FieldLabel hintKey={fieldKey}>{label}</FieldLabel>
         <ListEditor value={value as Record<string, JsonValue>[]} onChange={(v) => onChange(v)} depth={depth} />
       </div>
     );
@@ -140,7 +148,7 @@ function Field({
   if (isPlainObject(value)) {
     return (
       <div>
-        <FieldLabel>{label}</FieldLabel>
+        <FieldLabel hintKey={fieldKey}>{label}</FieldLabel>
         <ObjectEditor value={value} onChange={(v) => onChange(v)} depth={depth + 1} />
       </div>
     );
@@ -149,8 +157,18 @@ function Field({
   return null;
 }
 
-function FieldLabel({ children }: { children: React.ReactNode }) {
-  return <p className="text-[11px] font-mono uppercase tracking-wide text-neutral-500 mb-1.5">{children}</p>;
+function FieldLabel({ children, hintKey }: { children: React.ReactNode; hintKey?: string }) {
+  // Looked up on the raw field name, not the displayed label — the label is
+  // humanised ("heroVideo" -> "Hero Video") and would never match. Field names
+  // repeat across sections ("heading" exists nearly everywhere), so one entry
+  // per name covers the whole panel.
+  const hint = hintKey ? FIELD_GUIDE[hintKey] : undefined;
+  return (
+    <div className="mb-1.5">
+      <p className="text-[11px] font-mono uppercase tracking-wide text-neutral-500">{children}</p>
+      {hint && <p className="mt-0.5 text-[11px] text-neutral-500/90 leading-snug normal-case">{hint}</p>}
+    </div>
+  );
 }
 
 export function StringListEditor({ value, onChange }: { value: string[]; onChange: (v: string[]) => void }) {
