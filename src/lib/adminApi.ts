@@ -54,7 +54,13 @@ export function logout(): Promise<{ ok: true }> {
   return request("/api/admin/logout", { method: "POST" });
 }
 
-export function saveContent(key: string, value: unknown): Promise<{ ok: true }> {
+export interface SaveResult {
+  ok: true;
+  /** Files removed from Cloudinary because this save left them unreferenced. */
+  cleaned?: { url: string; filename: string }[];
+}
+
+export function saveContent(key: string, value: unknown): Promise<SaveResult> {
   return request(`/api/admin/content/${key}`, {
     method: "PUT",
     headers: { "Content-Type": "application/json" },

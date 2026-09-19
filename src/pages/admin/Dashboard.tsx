@@ -100,6 +100,7 @@ export default function AdminDashboard() {
   const [dirty, setDirty] = useState(false);
   const [status, setStatus] = useState<"idle" | "saving" | "saved" | "error">("idle");
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const [cleaned, setCleaned] = useState<{ url: string; filename: string }[]>([]);
 
   useEffect(() => {
     setDraft(content[activeKey as keyof typeof content] as JsonValue);
@@ -110,12 +111,17 @@ export default function AdminDashboard() {
   const onSave = async () => {
     setStatus("saving");
     setErrorMsg(null);
+    setCleaned([]);
     try {
-      await saveContent(activeKey, draft);
+      const res = await saveContent(activeKey, draft);
       setStatus("saved");
       setDirty(false);
       setLocal(activeKey, draft);
-      setTimeout(() => setStatus("idle"), 2000);
+      // Tell the editor when a replaced image was tidied away, so files do not
+      // disappear from Cloudinary silently.
+      const removed = res.cleaned ?? [];
+      setCleaned(removed);
+      setTimeout(() => setStatus("idle"), removed.length ? 8000 : 2000);
     } catch (e) {
       setStatus("error");
       setErrorMsg(e instanceof Error ? e.message : "Save failed");
@@ -162,7 +168,15 @@ export default function AdminDashboard() {
           <div>
             <p className="text-sm font-medium text-neutral-100">{activeLabel}</p>
             {dirty && <p className="text-xs text-amber-400">Unsaved changes</p>}
-            {status === "saved" && <p className="text-xs text-emerald-400">Saved</p>}
+            {status === "saved" && (
+              <p className="text-xs text-emerald-400">
+                Saved
+                {cleaned.length > 0 &&
+                  ` · removed ${cleaned.length} replaced file${cleaned.length > 1 ? "s" : ""} (${cleaned
+                    .map((c) => c.filename)
+                    .join(", ")})`}
+              </p>
+            )}
             {status === "error" && <p className="text-xs text-red-400">{errorMsg}</p>}
           </div>
           <div className="flex items-center gap-3">
@@ -264,6 +278,11 @@ function GuidePanel({ activeKey, label }: { activeKey: string; label: string }) 
             Changes go live as soon as you press <strong>Save Changes</strong>, and there is no undo. If you are
             unsure, copy the current wording into a note first. Visitors may keep seeing the old version for up to
             a minute afterwards.
+          </p>
+          <p className="text-xs text-amber-300/90 leading-relaxed">
+            <strong>Replacing a picture or video deletes the old file.</strong> When you save, any file this
+            section no longer uses is removed from storage for good — unless another part of the site still uses
+            it, in which case it is kept. Make sure you have your own copy of anything you might want back.
           </p>
         </dl>
       )}
