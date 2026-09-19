@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useContent, useContentSetLocal } from "../../lib/content";
 import { logout, saveContent } from "../../lib/adminApi";
 import ObjectEditor, { ListEditor, StringListEditor, type JsonValue } from "../../components/admin/ObjectEditor";
+import { SECTION_GUIDE } from "./guide";
 
 const GROUPS: { title: string; keys: { key: keyof ReturnType<typeof useContent>; label: string }[] }[] = [
   {
@@ -121,6 +122,9 @@ export default function AdminDashboard() {
     }
   };
 
+  const activeLabel =
+    GROUPS.flatMap((g) => g.keys).find((k) => String(k.key) === activeKey)?.label ?? activeKey;
+
   const onLogout = async () => {
     await logout().catch(() => {});
     navigate("/admin/login", { replace: true });
@@ -156,7 +160,7 @@ export default function AdminDashboard() {
       <main className="flex-1 min-w-0">
         <header className="sticky top-0 z-10 bg-neutral-950/95 backdrop-blur border-b border-neutral-800 px-6 py-4 flex items-center justify-between">
           <div>
-            <p className="text-xs font-mono uppercase tracking-wide text-neutral-500">{activeKey}</p>
+            <p className="text-sm font-medium text-neutral-100">{activeLabel}</p>
             {dirty && <p className="text-xs text-amber-400">Unsaved changes</p>}
             {status === "saved" && <p className="text-xs text-emerald-400">Saved</p>}
             {status === "error" && <p className="text-xs text-red-400">{errorMsg}</p>}
@@ -184,6 +188,7 @@ export default function AdminDashboard() {
         </header>
 
         <div className="p-6 max-w-3xl">
+          <GuidePanel activeKey={activeKey} label={activeLabel} />
           <SectionEditor value={draft} onChange={(v) => { setDraft(v); setDirty(true); }} />
         </div>
       </main>
@@ -213,4 +218,55 @@ function SectionEditor({ value, onChange }: { value: JsonValue; onChange: (v: Js
     );
   }
   return <p className="text-neutral-500 text-sm">Unsupported content type.</p>;
+}
+
+function GuidePanel({ activeKey, label }: { activeKey: string; label: string }) {
+  const [open, setOpen] = useState(true);
+  const guide = SECTION_GUIDE[activeKey];
+  if (!guide) return null;
+
+  return (
+    <div className="mb-6 border border-neutral-800 bg-neutral-900/60 rounded-lg overflow-hidden">
+      <button
+        type="button"
+        onClick={() => setOpen((v) => !v)}
+        className="w-full flex items-center justify-between px-4 py-3 text-left hover:bg-neutral-900"
+      >
+        <span className="flex items-center gap-2 text-sm text-neutral-200">
+          <span
+            aria-hidden="true"
+            className="w-4 h-4 rounded-full border border-rust-light text-rust-light text-[10px] leading-4 text-center"
+          >
+            i
+          </span>
+          What is “{label}”?
+        </span>
+        <span className="text-xs text-neutral-500">{open ? "Hide" : "Show"}</span>
+      </button>
+
+      {open && (
+        <dl className="px-4 pb-4 space-y-3 text-sm">
+          <div>
+            <dt className="text-[11px] font-mono uppercase tracking-wide text-neutral-500">What this controls</dt>
+            <dd className="mt-0.5 text-neutral-300 leading-relaxed">{guide.what}</dd>
+          </div>
+          <div>
+            <dt className="text-[11px] font-mono uppercase tracking-wide text-neutral-500">Where visitors see it</dt>
+            <dd className="mt-0.5 text-neutral-300 leading-relaxed">{guide.where}</dd>
+          </div>
+          <div>
+            <dt className="text-[11px] font-mono uppercase tracking-wide text-neutral-500">
+              What happens when you change it
+            </dt>
+            <dd className="mt-0.5 text-neutral-300 leading-relaxed">{guide.effect}</dd>
+          </div>
+          <p className="pt-1 text-xs text-amber-300/90 leading-relaxed">
+            Changes go live as soon as you press <strong>Save Changes</strong>, and there is no undo. If you are
+            unsure, copy the current wording into a note first. Visitors may keep seeing the old version for up to
+            a minute afterwards.
+          </p>
+        </dl>
+      )}
+    </div>
+  );
 }
