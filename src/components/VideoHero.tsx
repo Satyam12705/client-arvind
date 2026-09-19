@@ -1,10 +1,21 @@
 import { useEffect, useRef, useState } from "react";
 
 /**
- * Autoplaying muted background video with a poster-image fallback for
- * prefers-reduced-motion users (and for the brief moment before the video
- * can play). The MP4 itself is a placeholder — swap /public/videos/*.mp4
- * for real site-footage later without touching this component.
+ * Autoplaying muted background video, cross-faded in over its poster.
+ *
+ * The poster and the video are separate admin-chosen files and are usually not
+ * the same footage, so handing the swap to the browser's native `poster`
+ * attribute produces a hard cut: the still paints, then a completely different
+ * frame replaces it the moment playback starts. That jump is what reads as a
+ * bug on reload.
+ *
+ * Instead the poster is a real layer underneath, and the video fades over it
+ * once it can actually play. If playback never starts — Low Power Mode, a
+ * blocked autoplay, a slow connection — the poster simply stays, which is the
+ * intended fallback anyway.
+ *
+ * Under prefers-reduced-motion no video element is created at all and the
+ * poster is the whole hero.
  */
 export default function VideoHero({
   src,
@@ -18,6 +29,7 @@ export default function VideoHero({
   className?: string;
 }) {
   const [reduceMotion, setReduceMotion] = useState(false);
+  const [showVideo, setShowVideo] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
@@ -30,26 +42,34 @@ export default function VideoHero({
     const video = videoRef.current;
     if (!video) return;
 
-    // Safari requires these to be DOM properties as well as HTML attributes
-    // for autoplaying background video, especially after route navigation.
+    // Safari requires these as DOM properties as well as HTML attributes for
+    // autoplaying background video, especially after route navigation.
     const playVideo = () => {
       video.muted = true;
       video.defaultMuted = true;
       video.playsInline = true;
       void video.play().catch(() => {
         // Low Power Mode and user autoplay settings can still block playback.
-        // The poster remains as the intentional visual fallback in that case.
+        // The poster underneath remains as the intended visual fallback.
       });
     };
+
+    // Only reveal once there are real frames to show. `playing` is the honest
+    // signal; canplay can fire while the first frame is still not painted.
+    const reveal = () => setShowVideo(true);
 
     playVideo();
     video.addEventListener("loadeddata", playVideo);
     video.addEventListener("canplay", playVideo);
+    video.addEventListener("playing", reveal);
+    video.addEventListener("timeupdate", reveal);
     document.addEventListener("visibilitychange", playVideo);
 
     return () => {
       video.removeEventListener("loadeddata", playVideo);
       video.removeEventListener("canplay", playVideo);
+      video.removeEventListener("playing", reveal);
+      video.removeEventListener("timeupdate", reveal);
       document.removeEventListener("visibilitychange", playVideo);
     };
   }, [reduceMotion]);
@@ -70,28 +90,39 @@ export default function VideoHero({
   }
 
   return (
-    <video
-      ref={videoRef}
-      className={`${className} pointer-events-none`}
-      poster={poster}
-      autoPlay
-      muted
-      loop
-      playsInline
-      controls={false}
-      disablePictureInPicture
-      disableRemotePlayback
-      tabIndex={-1}
-      // "metadata" instead of "auto": the poster paints immediately and the
-      // component's own play() calls (on loadeddata/canplay) still start
-      // playback as soon as the browser has enough buffered — "auto" was
-      // telling the browser to eagerly pull the entire video file at parse
-      // time, competing for bandwidth with the JS bundle, fonts and the
-      // poster image itself on the very connection that determines LCP.
-      preload="metadata"
-      aria-label={alt}
-    >
-      <source src={src} type="video/mp4" />
-    </video>
+    <div className={`relative ${className}`}>
+      <img
+        src={poster}
+        alt={alt}
+        width={1283}
+        height={762}
+        className="absolute inset-0 w-full h-full object-cover"
+        loading="eager"
+        decoding="async"
+        fetchPriority="high"
+      />
+      <video
+        ref={videoRef}
+        className={`absolute inset-0 w-full h-full object-cover pointer-events-none transition-opacity duration-700 ease-out ${
+          showVideo ? "opacity-100" : "opacity-0"
+        }`}
+        autoPlay
+        muted
+        loop
+        playsInline
+        controls={false}
+        disablePictureInPicture
+        disableRemotePlayback
+        tabIndex={-1}
+        aria-hidden="true"
+        // "metadata" rather than "auto": the poster above is what the visitor
+        // sees first, so there is nothing to gain from eagerly pulling the whole
+        // file at parse time and competing with the JS bundle, fonts and the
+        // poster itself on the connection that decides LCP.
+        preload="metadata"
+      >
+        <source src={src} type="video/mp4" />
+      </video>
+    </div>
   );
 }
