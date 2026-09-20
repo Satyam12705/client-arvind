@@ -63,16 +63,33 @@ body {
   }
 }
 
-/* Very large displays. Held at 1440px the content became a narrow strip with
-   dead space either side — 1200px of it per side on a 4K panel, where the
-   column used only 38% of the screen while the hero and photo bands ran
-   full-bleed behind it. Raising the cap here takes 4K to ~46% and makes
-   ultrawide read as deliberate. Deliberately a single step and not unbounded:
-   past roughly this width, grid rows and body copy start running longer than
-   comfortable to read. Nothing below 1920px is affected. */
+/* Large displays.
+ *
+ * A single fixed step (1760px from 1920px up) fixed 4K but left every pixel
+ * past that as dead margin, and left a dip just below the breakpoint:
+ *
+ *        1440px  column 1297px   90% of screen
+ *        1900px  column 1312px   69%      <- worse than 1440
+ *        2560px  column 1600px   62%      <- 480px dead each side
+ *        3440px  column 1600px   46%
+ *
+ * Tracking the viewport keeps the margins proportional instead, so the column
+ * never stops growing and the dip disappears. The lower bound holds 1440px
+ * screens exactly where they were; the upper bound stops it running away on a
+ * 34" panel, where a full-width grid row would be its own problem.
+ *
+ * This does not lengthen a single line of text: headings are capped in em by
+ * .measure-display and body copy by its own max-w-*, so what gets the extra
+ * width is the grids and the imagery — which is where the emptiness showed.
+ */
+@media (min-width: 1440px) {
+  .container-edge {
+    max-width: clamp(1440px, 92vw, 2400px);
+  }
+}
+
 @media (min-width: 1920px) {
   .container-edge {
-    max-width: 1760px;
     padding-inline: 5rem;
   }
 }
@@ -161,6 +178,52 @@ body {
 .text-bg-numeral {
   font-size: clamp(7rem, 4rem + 16vw, 22rem);
   line-height: 0.8;
+}
+
+/* Large displays: keep the display type growing with the layout.
+ *
+ * Every scale above tops out between roughly 1300px and 1937px of viewport, so
+ * past that the column kept widening (see .container-edge) while the headings
+ * stayed the same size — which is what makes type look undersized on a 2560px
+ * panel rather than merely generous.
+ *
+ * Each rule picks up at its own existing ceiling and grows about a quarter
+ * again by 2560px, then stops — .container-edge stops at 2400px too, so past
+ * that the layout is not gaining width and the type should not gain size. The
+ * slope is deliberately gentler than the one below this breakpoint: carrying
+ * the hero's original 4.2vw through to 2560px would have made it 125px.
+ *
+ * Nothing under 1920px is touched, and measure is unaffected — .measure-display
+ * caps in em, so a larger heading keeps the same characters per line.
+ */
+@media (min-width: 1920px) {
+  .text-hero-display {
+    font-size: clamp(4.5rem, 1.125rem + 2.8125vw, 5.625rem);
+  }
+
+  .text-page-display {
+    font-size: clamp(3.75rem, 0.9375rem + 2.34375vw, 4.6875rem);
+  }
+
+  .text-cinema-display {
+    font-size: clamp(4.25rem, 1.0625rem + 2.65625vw, 5.3125rem);
+  }
+
+  .text-editorial-display {
+    font-size: clamp(6.25rem, 1.5625rem + 3.90625vw, 7.8125rem);
+  }
+
+  .text-cta-display {
+    font-size: clamp(3.75rem, 0.9375rem + 2.34375vw, 4.6875rem);
+  }
+
+  .text-stat-giant {
+    font-size: clamp(14rem, 3.5rem + 8.75vw, 17.5rem);
+  }
+
+  .text-bg-numeral {
+    font-size: clamp(22rem, 5.5rem + 13.75vw, 27.5rem);
+  }
 }
 
 /* Small monospace engineering-drawing style metadata tag: "ATF / 001 — ENGINEERING". */
