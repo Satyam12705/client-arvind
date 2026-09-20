@@ -180,6 +180,52 @@ body {
   transform: translateZ(0);
 }
 
+/* Hero media band.
+ *
+ * The hero films are 16:9. A phone-shaped hero is roughly 0.44 wide-to-tall,
+ * so making the film cover the whole ~105vh box crops away three quarters of
+ * its width — enough to slice the borders off the framed photographs in the
+ * tribute edit — and stretches 1080 lines of source over ~2660 device pixels
+ * on a 3x screen, which is what reads as poor quality.
+ *
+ * On phones the band is therefore sized closer to the film's own shape: about
+ * twice as much of the frame survives and the upscale drops to around 1.4x.
+ * The bottom edge is masked so the band dissolves into the hero's charcoal
+ * rather than ending on a visible line, and the headline still sits over the
+ * lower part of the picture as before.
+ *
+ * From md up the viewport is wide enough that covering the full hero crops
+ * little and needs no upscale, so the band goes back to filling it.
+ */
+.hero-media {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: -6%;
+  height: 72vh;
+  -webkit-mask-image: linear-gradient(to bottom, #000 58%, transparent 100%);
+  mask-image: linear-gradient(to bottom, #000 58%, transparent 100%);
+}
+
+/* An upright cut is configured, so there is nothing to rescue: the film is
+   already the right shape for a phone and should fill the hero. */
+.hero-media--fills {
+  bottom: -6%;
+  height: auto;
+  -webkit-mask-image: none;
+  mask-image: none;
+}
+
+@media (min-width: 768px) {
+  .hero-media {
+    top: -6%;
+    bottom: -6%;
+    height: auto;
+    -webkit-mask-image: none;
+    mask-image: none;
+  }
+}
+
 .label-eyebrow {
   font-family: var(--font-mono);
   font-size: 0.75rem;

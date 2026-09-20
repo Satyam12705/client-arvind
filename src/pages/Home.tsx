@@ -69,6 +69,13 @@ export default function Home() {
   // phone. The hero is dark either way, so the wait reads as the section
   // loading rather than as the wrong clip playing.
   const contentReady = useContentReady();
+  // /api/content replaces siteSettings wholesale rather than merging field by
+  // field, so a setting added after the site was seeded is simply absent from
+  // saved content until someone opens the admin panel and saves it. Falling
+  // back to the cut that ships in the repo means phones get an upright hero
+  // now; setting the field to an empty string in the panel is still a
+  // deliberate "use the main hero video on phones too".
+  const heroVideoMobile = siteSettings.heroVideoMobile ?? "/videos/hero-mobile.mp4";
   const featuredProjects = projects.slice(0, 5);
   const { sections } = home;
   const [heroStat, ...supportingStats] = home.stats;
@@ -80,10 +87,17 @@ export default function Home() {
           giant display type can never be clipped by overflow-hidden at any
           viewport width — the section grows to fit its content instead. */}
       <section className="relative min-h-[94vh] md:min-h-screen flex items-end overflow-hidden bg-charcoal">
-        <div ref={heroBgRef} className="absolute left-0 right-0 layer-isolate" style={{ top: "-6%", bottom: "-6%" }}>
+        {/* With an upright cut configured the film already matches a phone's
+            shape, so the band fills the hero as it does on desktop. Without
+            one, .hero-media shortens it instead — see index.css for why. */}
+        <div
+          ref={heroBgRef}
+          className={`hero-media layer-isolate ${heroVideoMobile ? "hero-media--fills" : ""}`}
+        >
           {contentReady && (
             <VideoHero
               src={siteSettings.heroVideo}
+              mobileSrc={heroVideoMobile}
               poster={siteSettings.heroPoster}
               alt={siteSettings.heroVideoAlt}
               className="w-full h-full object-cover"
