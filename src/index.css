@@ -542,6 +542,72 @@ body {
    A slow, small float keeps "hero" elements from reading as dead once their
    entrance has finished. Transform only, and long enough (10-14s) that it is
    felt rather than watched. */
+/* --- Fieldwork slider -------------------------------------------------
+ *
+ * Depth layers behind the stage. The backdrop is a deliberately tiny copy of
+ * the live slide (Cloudinary w_320) blown up and blurred: at this blur radius
+ * the extra pixels of a full-size image are invisible, and blurring a 320px
+ * source instead of a 1600px one is what keeps the effect off the main
+ * thread on a phone. It exists to fill the full-bleed width so an ultrawide
+ * panel never shows bare charcoal either side of the framed photograph.
+ */
+.fw-backdrop {
+  transform: scale(1.18);
+  filter: blur(34px) saturate(0.85);
+  opacity: 0.38;
+}
+
+/* The stage itself. Slides are stacked and cross-wiped rather than translated
+   on a rail, so only clip-path/opacity/transform ever change — all of which
+   stay on the compositor. The long transform duration is the slow push-in
+   that keeps the live slide from sitting completely still. */
+.fw-slide {
+  transition:
+    clip-path 900ms cubic-bezier(0.16, 1, 0.3, 1),
+    opacity 600ms ease,
+    transform 9000ms ease-out;
+}
+
+/* Autoplay progress. A keyframe rather than a transition: a transition needs a
+   previously painted "from" frame to animate out of, which a bar that is
+   remounted on every slide change does not have, so it would simply snap to
+   full. An animation runs from its own `from` with no such dependency. */
+@keyframes fw-progress {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+/* Foreground vignette, purely to seat the photograph in the dark section. */
+.fw-vignette {
+  background: radial-gradient(
+    ellipse at center,
+    transparent 55%,
+    rgba(23, 24, 26, 0.55) 100%
+  );
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fw-slide {
+    transition-duration: 1ms, 1ms, 1ms;
+    transform: none !important;
+  }
+  .fw-backdrop {
+    filter: blur(34px);
+  }
+}
+
+/* A blurred, scaled backdrop is the first thing worth dropping on a phone:
+   it is the most expensive layer here and the least visible at that size. */
+@media (max-width: 767px) {
+  .fw-backdrop {
+    display: none;
+  }
+}
+
 @keyframes float-soft {
   0%, 100% {
     transform: translate3d(0, 0, 0);

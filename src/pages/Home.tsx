@@ -8,6 +8,7 @@ import BlueprintFrame from "../components/BlueprintFrame";
 import TechTag from "../components/TechTag";
 import ProjectExplorer from "../components/ProjectExplorer";
 import ClientMarquee from "../components/ClientMarquee";
+import FieldworkSlider from "../components/FieldworkSlider";
 import Carousel from "../components/Carousel";
 import Seo from "../components/Seo";
 import { useContent, useContentReady } from "../lib/content";
@@ -370,49 +371,24 @@ export default function Home() {
         </section>
       )}
 
-      {/* 7. FIELDWORK — full-bleed cinematic image with floating supporting frames */}
-      <section className="relative bg-charcoal">
-        <div className="relative h-[80vh] min-h-[520px] max-h-[820px] overflow-hidden">
-          {sections.photography.items[0] && (
-            <SafeImage
-              src={sections.photography.items[0].image}
-              alt={sections.photography.items[0].caption}
-              width={1920}
-              height={1080}
-              className="w-full h-full object-cover"
-              loading="lazy"
-              decoding="async"
-            />
-          )}
-          <div className="absolute inset-0 bg-gradient-to-t from-charcoal via-charcoal/30 to-charcoal/10" />
-          <div className="absolute inset-0 bg-gradient-to-r from-charcoal/60 via-transparent to-transparent" />
-
-          <div className="relative h-full container-edge flex items-end pb-16 md:pb-20">
-            <Reveal>
-              <TechTag dark onImage className="mb-6">{sections.photography.eyebrowLabel}</TechTag>
-              <h2 className="text-editorial-display font-semibold uppercase tracking-tight leading-[0.98] text-white whitespace-pre-line">
-                {sections.photography.heading}
-              </h2>
-              <Link
-                to="/gallery"
-                className="group mt-7 inline-flex items-center gap-2 label-eyebrow text-rust-light hover:text-white"
-              >
-                {sections.photography.linkLabel} <ArrowIcon className="transition-transform duration-300 group-hover:translate-x-1" />
-              </Link>
-            </Reveal>
-          </div>
-
-          {/* Floating offset supporting frames */}
-          <div className="hidden lg:flex absolute right-10 xl:right-16 top-1/2 -translate-y-1/2 flex-col gap-6">
-            {sections.photography.items.slice(1).map((item, i) => (
-              <Reveal key={item.image} delay={i * 150} className={i === 1 ? "translate-x-10" : ""}>
-                <BlueprintFrame dark className="block w-56 aspect-[4/3] overflow-hidden shadow-2xl">
-                  <SafeImage src={item.image} alt={item.caption} width={800} height={600} className="w-full h-full object-cover" loading="lazy" decoding="async" />
-                </BlueprintFrame>
-              </Reveal>
-            ))}
-          </div>
-        </div>
+      {/* 7. FIELDWORK — cinematic photography slider.
+          Was a single full-bleed photograph with two small frames floated over
+          its right edge. Those frames were `hidden lg:flex`, so two of the
+          three photographs simply did not render below 1024px; the slider puts
+          every one of them on the same stage at every width. */}
+      <section className="relative bg-charcoal overflow-hidden">
+        <FieldworkSlider
+          items={sections.photography.items}
+          eyebrow={sections.photography.eyebrowLabel}
+          heading={sections.photography.heading}
+          linkLabel={sections.photography.linkLabel}
+          linkTo="/gallery"
+          // `home` is replaced wholesale by /api/content the same way
+          // siteSettings is, so a field added after the site was seeded reads
+          // as undefined until an editor saves the section. Falling back here
+          // keeps the pace sensible until then.
+          autoAdvanceMs={(sections.photography.slideSeconds ?? 6.5) * 1000}
+        />
       </section>
 
       {/* 8. QUALITY / TRUST MOMENT — light */}
