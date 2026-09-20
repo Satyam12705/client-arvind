@@ -109,6 +109,7 @@ const home = {
       eyebrowLabel: "Field Execution",
       heading: "Grounded\nin real\nfieldwork.",
       linkLabel: "View full gallery",
+      slideSeconds: 6.5,
       items: [
         { image: "/images/gallery/kalisindh-aerial.jpg", caption: "Kalisindh Phase-I, MLIS — Dewas, Madhya Pradesh" },
         { image: "/images/gallery/sauni-earthwork.jpg", caption: "Earthwork Excavation — SAUNI Yojana L3P3, Gujarat" },
@@ -280,8 +281,42 @@ const normalizedCompany = {
   partners: company.partners.map((p) => ({ photo: "", ...p })),
 };
 
+// Clients shown in the home-page marquee. This lived only in
+// defaultContent.json for a while, which meant every run of this script
+// deleted it again — the file is generated wholesale from the map below, so
+// anything not listed here does not survive.
+const clients = {
+  "eyebrowIndex": "05",
+  "eyebrowLabel": "Clients",
+  "heading": "Trusted by India's infrastructure majors.",
+  "intro": "Work delivered directly and as a sub-contractor for some of the country's largest infrastructure and EPC contractors.",
+  "items": [
+    {
+      "name": "Larsen & Toubro",
+      "logo": "/images/clients/lt.svg"
+    },
+    {
+      "name": "Adani",
+      "logo": "/images/clients/adani.svg"
+    },
+    {
+      "name": "NCC Limited",
+      "logo": "/images/clients/ncc.png"
+    },
+    {
+      "name": "Essar",
+      "logo": "/images/clients/essar.svg"
+    },
+    {
+      "name": "LCC Projects",
+      "logo": "/images/clients/lcc.png"
+    }
+  ]
+};
+
 const content = {
   company: normalizedCompany,
+  clients,
   nav,
   timeline,
   specializations,

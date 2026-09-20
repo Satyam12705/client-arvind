@@ -217,6 +217,8 @@ export const FIELD_GUIDE: Record<string, string> = {
   heroVideoMobile:
     "Optional upright version of the hero film, used on phones only. Upload 1080 x 1920 (9:16 portrait), under about 20 seconds and under 8 MB, silent. A phone hero is roughly twice as tall as it is wide, so a normal widescreen film has to lose about three quarters of its width to fill it — an upright cut keeps the whole picture and looks sharper. Keep anything that matters within the middle 80%, and start on a lit frame rather than a fade up from black. Leave this empty to use the main hero video on phones as well.",
   linkLabel: "The wording of the link at the end of this section.",
+  slideSeconds:
+    "How long each photograph stays on screen in the fieldwork slider, in seconds. Around 6 to 8 reads as unhurried; below 4 starts to feel restless behind the heading. Autoplay pauses by itself while a visitor is hovering, using the arrows, or has reduced motion switched on in their system, so this is the unattended pace only.",
   ctaLabel: "The wording on the button.",
   ctaPrimaryLabel: "The wording on the main (filled) button.",
   ctaSecondaryLabel: "The wording on the outlined button next to it.",

@@ -29,6 +29,34 @@
     ],
     "whatsappNumber": "919998106542"
   },
+  "clients": {
+    "eyebrowIndex": "05",
+    "eyebrowLabel": "Clients",
+    "heading": "Trusted by India's infrastructure majors.",
+    "intro": "Work delivered directly and as a sub-contractor for some of the country's largest infrastructure and EPC contractors.",
+    "items": [
+      {
+        "name": "Larsen & Toubro",
+        "logo": "/images/clients/lt.svg"
+      },
+      {
+        "name": "Adani",
+        "logo": "/images/clients/adani.svg"
+      },
+      {
+        "name": "NCC Limited",
+        "logo": "/images/clients/ncc.png"
+      },
+      {
+        "name": "Essar",
+        "logo": "/images/clients/essar.svg"
+      },
+      {
+        "name": "LCC Projects",
+        "logo": "/images/clients/lcc.png"
+      }
+    ]
+  },
   "nav": [
     {
       "label": "Home",
@@ -946,6 +974,7 @@
         "eyebrowLabel": "Field Execution",
         "heading": "Grounded\nin real\nfieldwork.",
         "linkLabel": "View full gallery",
+        "slideSeconds": 6.5,
         "items": [
           {
             "image": "/images/gallery/kalisindh-aerial.jpg",
@@ -1161,33 +1190,5 @@
     "ctaSecondaryLabel": "WhatsApp Us",
     "navigateHeading": "Navigate",
     "contactHeading": "Contact"
-  },
-  "clients": {
-    "eyebrowIndex": "05",
-    "eyebrowLabel": "Clients",
-    "heading": "Trusted by India's infrastructure majors.",
-    "intro": "Work delivered directly and as a sub-contractor for some of the country's largest infrastructure and EPC contractors.",
-    "items": [
-      {
-        "name": "Larsen & Toubro",
-        "logo": "/images/clients/lt.svg"
-      },
-      {
-        "name": "Adani",
-        "logo": "/images/clients/adani.svg"
-      },
-      {
-        "name": "NCC Limited",
-        "logo": "/images/clients/ncc.png"
-      },
-      {
-        "name": "Essar",
-        "logo": "/images/clients/essar.svg"
-      },
-      {
-        "name": "LCC Projects",
-        "logo": "/images/clients/lcc.png"
-      }
-    ]
   }
 }
