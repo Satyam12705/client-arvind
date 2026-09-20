@@ -871,6 +871,7 @@
     "heroVideo": "/videos/hero-placeholder.mp4",
     "heroPoster": "/images/gallery/kalisindh-trench.jpg",
     "heroVideoAlt": "Anand Techno-Fab project sites — pipeline installation, earthwork and mining operations",
+    "heroVideoMobile": "/videos/hero-mobile.mp4",
     "introEnabled": true,
     "motionEnabled": true,
     "navCtaLabel": "Contact Us",
